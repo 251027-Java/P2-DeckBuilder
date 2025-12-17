@@ -1,0 +1,30 @@
+Tables:
+
+    SETS {
+      VARCHAR id PK
+      VARCHAR name
+      INT release_year
+    }
+
+    CARDS {
+      VARCHAR id PK
+      VARCHAR name
+      VARCHAR rarity
+      VARCHAR card_type
+      VARCHAR set_id FK  "→ SETS.id"
+    }
+
+    DECKS {
+      SERIAL id PK
+      VARCHAR name "UNIQUE"
+      VARCHAR description
+      TIMESTAMP created_at
+    }
+
+    DECK_CARDS {
+      INT deck_id FK   "→ DECKS.id"
+      VARCHAR card_id FK "→ CARDS.id"
+      INT quantity
+      PK (deck_id, card_id)
+    }
+
