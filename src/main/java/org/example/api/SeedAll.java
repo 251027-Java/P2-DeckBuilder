@@ -3,6 +3,7 @@ package org.example.api;
 import org.example.DBSetUp;
 import org.example.Repository.JdbcSetRepository;
 import org.example.Repository.JdbcCardRepository;
+import org.example.config.ConfigApplicationProperties;
 import org.example.model.Set;
 import org.example.model.Card;
 
@@ -12,16 +13,25 @@ import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class SeedAll {
 
-    private static final String URL  = System.getenv("DB_URL");
-    private static final String USER = System.getenv("DB_USER");
-    private static final String PASS = System.getenv("DB_PASS");
+    private static String getUrl() {
+        return ConfigApplicationProperties.getUrl();
+    }
+
+    private static String getUser() {
+        return ConfigApplicationProperties.getUser();
+    }
+
+    private static String getPass() {
+        return ConfigApplicationProperties.getPass();
+    }
 
     public static void main(String[] args) {
         try {
-
+            Properties props = new Properties();
             DBSetUp.ensureSchema();
 
             JdbcSetRepository setRepo = new JdbcSetRepository();
@@ -106,12 +116,12 @@ public class SeedAll {
 
 
     private static void seedDemoDeckAndCards() {
-        if (URL == null || USER == null || PASS == null) {
+        if (getUrl() == null || getUser() == null || getPass() == null) {
             System.out.println("DB env vars missing; skipping demo deck seeding.");
             return;
         }
 
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASS)) {
+        try (Connection conn = DriverManager.getConnection(getUrl(), getUser(), getPass())) {
             conn.setAutoCommit(false);
 
 

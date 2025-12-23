@@ -1,5 +1,6 @@
 package org.example.Repository;
 
+import org.example.config.ConfigApplicationProperties;
 import org.example.model.DeckCardView;
 
 import java.sql.*;
@@ -8,9 +9,9 @@ import java.util.List;
 
 public class JdbcDeckCardRepository implements IDeckCardRepository {
 
-    private static final String URL  = System.getenv("DB_URL");
-    private static final String USER = System.getenv("DB_USER");
-    private static final String PASS = System.getenv("DB_PASS");
+    private static final String URL  = ConfigApplicationProperties.getUrl();
+    private static final String USER = ConfigApplicationProperties.getUser();
+    private static final String PASS = ConfigApplicationProperties.getPass();
 
     static {
         if (URL == null || USER == null || PASS == null) {
