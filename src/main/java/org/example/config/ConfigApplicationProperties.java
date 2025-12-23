@@ -1,7 +1,5 @@
 package org.example.config;
 
-import org.example.DBSetUp;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -14,7 +12,6 @@ public class ConfigApplicationProperties {
     private static String pass;
 
     private static void loadProperties() {
-        props = new Properties();
         try (InputStream input = ConfigApplicationProperties.class
                 .getClassLoader()
                 .getResourceAsStream("application.properties")) {
@@ -43,7 +40,7 @@ public class ConfigApplicationProperties {
         loadProperties();
         if (user == null) {
             throw new IllegalStateException(
-                    "Missing DB user. Got: USER=" + user );
+                    "Missing DB user. Got: USER=" + user);
         }
         return user;
     }
