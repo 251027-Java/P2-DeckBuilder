@@ -7,6 +7,12 @@ import org.example.model.*;
 import java.util.List;
 import java.util.Scanner;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
 public class Main {
 
     private final SetService setService;

@@ -1,23 +1,19 @@
 package org.example;
 
+import org.example.config.ConfigApplicationProperties;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.List;
+import java.util.Properties;
+
 
 public final class DBSetUp {
+
     public static void ensureSchema() throws SQLException {
-        String url  = System.getenv("DB_URL");
-        String user = System.getenv("DB_USER");
-        String pass = System.getenv("DB_PASS");
-
-        if (url == null || user == null || pass == null) {
-            throw new IllegalStateException(
-                    "Missing DB envs. Got: DB_URL=" + url +
-                            ", DB_USER=" + user +
-                            ", DB_PASS=" + (pass != null ? "***" : null)
-            );
-        }
-
-        try (Connection c = DriverManager.getConnection(url, user, pass)) {
+        System.out.println("URL: "+ConfigApplicationProperties.getUrl());
+        try (Connection c = DriverManager.getConnection(ConfigApplicationProperties.getUrl(), ConfigApplicationProperties.getUser(), ConfigApplicationProperties.getPass())) {
             c.setAutoCommit(false);
 
             for (String ddl : List.of(
