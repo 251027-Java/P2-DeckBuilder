@@ -1,0 +1,7 @@
+org\example\model\User.class
+org\example\Main.class
+org\example\Service\UserService.class
+org\example\Controller\UserController.class
+org\example\Controller\UserWOIDDTO.class
+org\example\Controller\UserDTO.class
+org\example\Repository\IUserRepository.class
