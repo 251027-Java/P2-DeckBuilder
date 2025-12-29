@@ -1,0 +1,17 @@
+:root {
+  --reactbits-primary: #FF0000;
+  --reactbits-secondary: #0075BE;
+  --reactbits-accent: #FFDE00;
+  --reactbits-background: rgba(255, 255, 255, 0.9);
+  --reactbits-surface: rgba(255, 255, 255, 0.7);
+  --reactbits-border-radius: 16px;
+  --reactbits-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --reactbits-animation-duration: 0.3s;
+}
+
+.dark-theme {
+  --reactbits-primary: #FF4444;
+  --reactbits-secondary: #3399FF;
+  --reactbits-background: rgba(30, 30, 30, 0.9);
+  --reactbits-surface: rgba(50, 50, 50, 0.7);
+}
