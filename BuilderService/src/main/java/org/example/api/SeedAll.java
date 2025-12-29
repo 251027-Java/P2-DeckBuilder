@@ -1,7 +1,7 @@
 package org.example.api;
 
 import org.example.DBSetUp;
-import org.example.Repository.JdbcSetRepository;
+import org.example.Repository.ISetRepository;
 import org.example.Repository.JdbcCardRepository;
 import org.example.config.ConfigApplicationProperties;
 import org.example.model.Set;
@@ -34,7 +34,7 @@ public class SeedAll {
             Properties props = new Properties();
             DBSetUp.ensureSchema();
 
-            JdbcSetRepository setRepo = new JdbcSetRepository();
+            //JdbcSetRepository setRepo = new JdbcSetRepository();
             JdbcCardRepository cardRepo = new JdbcCardRepository();
             PokemonTcgApiClient apiClient = new PokemonTcgApiClient();
 
@@ -42,7 +42,7 @@ public class SeedAll {
             //setRepo.debugConnection();
 
 
-            seedSetsFromJson(setRepo, apiClient, "/sets.json");
+            //seedSetsFromJson(setRepo, apiClient, "/sets.json");
 
             String[] cardFiles = {
                     "/cards_base1.json"
@@ -62,7 +62,7 @@ public class SeedAll {
     }
 
 
-    private static void seedSetsFromJson(JdbcSetRepository setRepo,
+    private static void seedSetsFromJson(ISetRepository setRepo,
                                          PokemonTcgApiClient apiClient,
                                          String resourcePath) {
         try {
