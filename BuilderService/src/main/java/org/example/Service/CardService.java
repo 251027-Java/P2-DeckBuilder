@@ -2,7 +2,6 @@ package org.example.Service;
 
 import org.example.Repository.ICardRepository;
 import org.example.Repository.ISetRepository;
-import org.example.Repository.JdbcSetRepository;
 import org.example.model.Card;
 
 import java.util.List;

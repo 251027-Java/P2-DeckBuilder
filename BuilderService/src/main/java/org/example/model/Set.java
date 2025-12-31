@@ -1,26 +1,23 @@
 package org.example.model;
 
+import jakarta.persistence.*;
+import lombok.Data;
+
+@Entity
+@Data
+@Table(name="sets")
 public class Set {
     // Fields
+    @Id @GeneratedValue
     private String id;
+    
     private String name;
     private Integer releaseYear;
 
     // Constructors
     public Set() {}
-    public Set(String id, String name, Integer releaseYear) {
-        this.id = id;
+    public Set(String name, Integer releaseYear) {
         this.name = name;
         this.releaseYear = releaseYear;
     }
-
-    // Methods
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    public Integer getReleaseYear() { return releaseYear; }
-    public void setReleaseYear(Integer releaseYear) { this.releaseYear = releaseYear; }
 }
