@@ -32,7 +32,7 @@ public class PokemonTcgApiClient {
             }
 
             Set s = new Set();
-            s.setId(id);
+            //s.setId(id);
             s.setName(name);
             s.setReleaseYear(releaseYear);
             result.add(s);

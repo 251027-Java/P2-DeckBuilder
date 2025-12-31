@@ -15,48 +15,50 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Main {
 
-    private final SetService setService;
-    private final CardService cardService;
-    private final DeckService deckService;
-    private final DeckCardService deckCardService;
+    // private final SetService setService;
+    // private final CardService cardService;
+    // private final DeckService deckService;
+    // private final DeckCardService deckCardService;
 
-    private final Scanner sc = new Scanner(System.in);
+    // private final Scanner sc = new Scanner(System.in);
 
-    public Main(SetService setService,
-                CardService cardService,
-                DeckService deckService,
-                DeckCardService deckCardService) {
-        this.setService = setService;
-        this.cardService = cardService;
-        this.deckService = deckService;
-        this.deckCardService = deckCardService;
-    }
+    // public Main(SetService setService,
+    //             CardService cardService,
+    //             DeckService deckService,
+    //             DeckCardService deckCardService) {
+    //     this.setService = setService;
+    //     this.cardService = cardService;
+    //     this.deckService = deckService;
+    //     this.deckCardService = deckCardService;
+    // }
 
     public static void main(String[] args) {
-        try {
-            DBSetUp.ensureSchema();
-        } catch (Exception e) {
-            System.out.println("Failed to create/verify schema.");
-            e.printStackTrace();
-            return;
-        }
+        SpringApplication.run(Main.class, args);
 
-        // Repositories
-        ISetRepository setRepo = new JdbcSetRepository();
-        ICardRepository cardRepo = new JdbcCardRepository();
-        IDeckRepository deckRepo = new JdbcDeckRepository();
-        IDeckCardRepository deckCardRepo = new JdbcDeckCardRepository();
+        // try {
+        //     DBSetUp.ensureSchema();
+        // } catch (Exception e) {
+        //     System.out.println("Failed to create/verify schema.");
+        //     e.printStackTrace();
+        //     return;
+        // }
 
-        // Services
-        SetService setService = new SetService(setRepo);
-        CardService cardService = new CardService(cardRepo, setRepo);
-        DeckService deckService = new DeckService(deckRepo);
-        DeckCardService deckCardService =
-                new DeckCardService(deckCardRepo, deckRepo, cardRepo);
+        // // Repositories
+        // ISetRepository setRepo = new JdbcSetRepository();
+        // ICardRepository cardRepo = new JdbcCardRepository();
+        // IDeckRepository deckRepo = new JdbcDeckRepository();
+        // IDeckCardRepository deckCardRepo = new JdbcDeckCardRepository();
 
-        new Main(setService, cardService, deckService, deckCardService).run();
+        // // Services
+        // SetService setService = new SetService(setRepo);
+        // CardService cardService = new CardService(cardRepo, setRepo);
+        // DeckService deckService = new DeckService(deckRepo);
+        // DeckCardService deckCardService =
+        //         new DeckCardService(deckCardRepo, deckRepo, cardRepo);
+
+        // new Main(setService, cardService, deckService, deckCardService).run();
     }
-
+/*
     private void run() {
         boolean running = true;
         System.out.println("\n=== Pokémon Deck Builder ===");
@@ -239,5 +241,5 @@ public class Main {
                 System.out.println("Please enter a valid integer.");
             }
         }
-    }
+    }*/
 }

@@ -56,7 +56,6 @@ class CardServiceTest {
     @Test
     void getCardsBySetId_happyPath_returnsList() {
         Set s = new Set();
-        s.setId("base1");
         s.setName("Base Set");
 
         when(setRepo.findAll()).thenReturn(List.of(s));
