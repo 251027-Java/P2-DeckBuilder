@@ -8,6 +8,7 @@ import org.example.model.Deck;
 import org.example.model.DeckCardView;
 
 import java.util.List;
+import java.util.Optional;
 
 public class DeckCardService {
     private final IDeckCardRepository deckCardRepo;
@@ -34,7 +35,7 @@ public class DeckCardService {
             throw new IllegalArgumentException("Deck does not exist: id=" + deckId);
         }
 
-        Card card = cardRepo.findById(cardId);
+        Optional<Card> card = cardRepo.findById(cardId);
         if (card == null) {
             throw new IllegalArgumentException("Card does not exist: id=" + cardId);
         }

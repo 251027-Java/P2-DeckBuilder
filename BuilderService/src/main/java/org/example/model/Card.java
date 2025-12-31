@@ -1,7 +1,17 @@
 package org.example.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Data;
+
+@Entity
+@Data
+@Table(name="cards")
 public class Card {
-    // Fields
+    @Id
+    @GeneratedValue
     private String id;
     private String name;
     private String rarity;
@@ -19,30 +29,5 @@ public class Card {
         this.setId = setId;
     }
 
-    // Methods
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    public String getRarity() { return rarity; }
-    public void setRarity(String rarity) { this.rarity = rarity; }
-
-    public String getCardType() { return cardType; }
-    public void setCardType(String cardType) { this.cardType = cardType; }
-
-    public String getSetId() { return setId; }
-    public void setSetId(String setId) { this.setId = setId; }
-
-    @Override
-    public String toString() {
-        return "Card{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", rarity='" + rarity + '\'' +
-                ", cardType='" + cardType + '\'' +
-                ", setId='" + setId + '\'' +
-                '}';
-    }
 }

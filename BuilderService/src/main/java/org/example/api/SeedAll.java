@@ -1,8 +1,8 @@
 package org.example.api;
 
 import org.example.DBSetUp;
+import org.example.Repository.ICardRepository;
 import org.example.Repository.ISetRepository;
-import org.example.Repository.JdbcCardRepository;
 import org.example.config.ConfigApplicationProperties;
 import org.example.model.Set;
 import org.example.model.Card;
@@ -35,7 +35,7 @@ public class SeedAll {
             DBSetUp.ensureSchema();
 
             //JdbcSetRepository setRepo = new JdbcSetRepository();
-            JdbcCardRepository cardRepo = new JdbcCardRepository();
+            //JdbcCardRepository cardRepo = new JdbcCardRepository();
             PokemonTcgApiClient apiClient = new PokemonTcgApiClient();
 
             System.out.println("---- DB Connection Info ----");
@@ -49,7 +49,7 @@ public class SeedAll {
                     // "/cards_base2.json",
                     // "/cards_base3.json"
             };
-            seedCardsFromJsonFiles(cardRepo, apiClient, cardFiles);
+            //seedCardsFromJsonFiles(cardRepo, apiClient, cardFiles);
 
 
             seedDemoDeckAndCards();
@@ -86,7 +86,8 @@ public class SeedAll {
     }
 
 
-    private static void seedCardsFromJsonFiles(JdbcCardRepository cardRepo,
+    private static void seedCardsFromJsonFiles(//JdbcCardRepository
+                                               ICardRepository cardRepo,
                                                PokemonTcgApiClient apiClient,
                                                String[] resourcePaths) {
         int totalInserted = 0;
