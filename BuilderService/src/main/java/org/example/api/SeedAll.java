@@ -4,6 +4,7 @@ import org.example.DBSetUp;
 import org.example.Repository.ISetRepository;
 import org.example.Repository.JdbcCardRepository;
 import org.example.config.ConfigApplicationProperties;
+import org.example.config.RestClientConfig;
 import org.example.model.Set;
 import org.example.model.Card;
 
@@ -36,7 +37,8 @@ public class SeedAll {
 
             //JdbcSetRepository setRepo = new JdbcSetRepository();
             JdbcCardRepository cardRepo = new JdbcCardRepository();
-            PokemonTcgApiClient apiClient = new PokemonTcgApiClient();
+            PokemonTcgApiClient apiClient =
+                    new PokemonTcgApiClient(new RestClientConfig().restClient());
 
             System.out.println("---- DB Connection Info ----");
             //setRepo.debugConnection();

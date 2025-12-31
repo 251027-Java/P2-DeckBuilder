@@ -3,15 +3,24 @@ package org.example.api;
 import com.google.gson.*;
 import org.example.model.Card;
 import org.example.model.Set;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class PokemonTcgApiClient {
 
     private final Gson gson = new Gson();
 
+    private final RestClient restClient;
 
+    public PokemonTcgApiClient(RestClient restClient) {
+        this.restClient = restClient;
+    }
+
+    // Takes set.json and parses into list of sets
     public List<Set> parseSetsFromJson(String json) {
         JsonObject root = JsonParser.parseString(json).getAsJsonObject();
         JsonArray data = root.getAsJsonArray("data");
@@ -41,7 +50,7 @@ public class PokemonTcgApiClient {
         return result;
     }
 
-
+    // Takes cards.json and parses into list of cards
     public List<Card> parseCardsFromJson(String json) {
         JsonObject root = JsonParser.parseString(json).getAsJsonObject();
         JsonArray data = root.getAsJsonArray("data");
@@ -68,5 +77,23 @@ public class PokemonTcgApiClient {
         }
 
         return cards;
+    }
+
+    // Call to API to get all sets as JSON
+    public String getSetsFromAPI() {
+        String url = "/sets";
+        return restClient.get()
+                .uri(url)
+                .retrieve()
+                .body(String.class);
+    }
+
+    // Call to API to get all cards in set as JSON
+    public String getCardsFromAPI(String setName) {
+        String url = "/cards?q=set.name:" + setName;
+        return restClient.get()
+                .uri(url)
+                .retrieve()
+                .body(String.class);
     }
 }
