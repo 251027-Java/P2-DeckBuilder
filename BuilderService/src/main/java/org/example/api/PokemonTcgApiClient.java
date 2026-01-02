@@ -3,13 +3,13 @@ package org.example.api;
 import com.google.gson.*;
 import org.example.model.Card;
 import org.example.model.Set;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Component
 public class PokemonTcgApiClient {
 
     private final Gson gson = new Gson();
