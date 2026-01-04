@@ -2,9 +2,11 @@ package org.example.Service;
 
 import org.example.Repository.IDeckRepository;
 import org.example.model.Deck;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class DeckService {
     private final IDeckRepository deckRepo;
 
