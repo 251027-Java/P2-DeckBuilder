@@ -6,12 +6,10 @@ import org.example.Repository.IDeckRepository;
 import org.example.model.Card;
 import org.example.model.Deck;
 import org.example.model.DeckCardView;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
 public class DeckCardService {
     private final IDeckCardRepository deckCardRepo;
     private final IDeckRepository deckRepo;
@@ -38,7 +36,7 @@ public class DeckCardService {
         }
 
         Optional<Card> card = cardRepo.findById(cardId);
-        if (card.isEmpty()) {
+        if (card == null) {
             throw new IllegalArgumentException("Card does not exist: id=" + cardId);
         }
 
