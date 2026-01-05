@@ -3,7 +3,6 @@ package org.example.Controller;
 import java.util.List;
 
 import org.example.Service.CardService;
-import org.example.Service.SetService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/card")
+@RequestMapping("/cards")
 public class CardController {
     private final CardService service;
 
@@ -27,6 +26,18 @@ public class CardController {
     @GetMapping("/set")
     public List<CardDTO> getBySetId(@RequestParam String setId) {
         return service.getBySetId(setId);
+    }
+
+    /**
+     * Search endpoint that implements sync logic:
+     * 1. Check DB for matches
+     * 2. If no results, fetch from Pokemon TCG API
+     * 3. Persist response to DB
+     * Example: /cards/search?q=pikachu
+     */
+    @GetMapping("/search")
+    public List<CardDTO> searchCards(@RequestParam("q") String query) {
+        return service.searchCardsByName(query);
     }
 
     @GetMapping
