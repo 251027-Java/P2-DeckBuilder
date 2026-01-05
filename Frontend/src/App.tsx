@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import PrivateRoute from './routes/PrivateRoute';
-import Login from './components/auth/Login';
+import LoginPage from './pages/LoginPage';
 import Register from './components/auth/Register';
 import Dashboard from './components/dashboard/Dashboard';
 import Navbar from './components/shared/Navbar';
@@ -18,7 +18,7 @@ const App: React.FC = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<Register />} />
         <Route
           path="/dashboard"
