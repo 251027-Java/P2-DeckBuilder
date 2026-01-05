@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import PrivateRoute from './routes/PrivateRoute';
-import Login from './components/auth/Login';
+import LoginPage from './pages/LoginPage';
 import Register from './components/auth/Register';
 import Dashboard from './components/dashboard/Dashboard';
 import Navbar from './components/shared/Navbar';
@@ -10,6 +10,7 @@ import DeckList from './components/decks/DeckList';
 import DeckBuilder from './components/decks/DeckBuilder';
 import CollectionView from './components/collection/CollectionView';
 import TradeCenter from './components/trades/TradeCenter';
+import DeckBuilderPage from './pages/DeckBuilderPage';
 
 const App: React.FC = () => {
   return (
@@ -18,7 +19,7 @@ const App: React.FC = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<Register />} />
         <Route
           path="/dashboard"
@@ -40,7 +41,7 @@ const App: React.FC = () => {
           path="/decks/new"
           element={
             <PrivateRoute>
-              <DeckBuilder />
+              <DeckBuilderPage />
             </PrivateRoute>
           }
         />

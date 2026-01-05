@@ -1,18 +1,59 @@
 package org.example.api;
 
-import com.google.gson.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.example.api.dto.PokemonTcgCardResponse;
+import org.example.api.dto.PokemonTcgSetResponse;
 import org.example.model.Card;
 import org.example.model.Set;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 @Component
 public class PokemonTcgApiClient {
 
     private final Gson gson = new Gson();
+    private final WebClient webClient;
+
+    // Constructor for Spring dependency injection
+    public PokemonTcgApiClient(WebClient pokemonTcgWebClient) {
+        this.webClient = pokemonTcgWebClient;
+    }
+
+    // No-args constructor for backward compatibility with standalone usage (SeedAll)
+    public PokemonTcgApiClient() {
+        this.webClient = null;
+    }
+
+    /**
+     * Fetch cards from Pokemon TCG API by name
+     * @param name The name to search for
+     * @return List of Card entities
+     */
+    public List<Card> fetchCardsByName(String name) {
+        if (webClient == null) {
+            throw new IllegalStateException("WebClient not initialized. Use constructor with WebClient parameter.");
+        }
+        try {
+            PokemonTcgCardResponse response = webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/cards")
+                            .queryParam("q", "name:" + name)
+                            .build())
+                    .retrieve()
+                    .bodyToMono(PokemonTcgCardResponse.class)
+                    .block();
+
+            if (response == null || response.getData() == null) {
+                return new ArrayList<>();
+            }
 
     private final RestClient restClient;
 
@@ -21,6 +62,7 @@ public class PokemonTcgApiClient {
     }
 
 
+    // Keep the old JSON parsing methods for backward compatibility
     public List<Set> parseSetsFromJson(String json) {
         JsonObject root = JsonParser.parseString(json).getAsJsonObject();
         JsonArray data = root.getAsJsonArray("data");
@@ -41,7 +83,7 @@ public class PokemonTcgApiClient {
             }
 
             Set s = new Set();
-            //s.setId(id);
+            s.setId(id);
             s.setName(name);
             s.setReleaseYear(releaseYear);
             result.add(s);

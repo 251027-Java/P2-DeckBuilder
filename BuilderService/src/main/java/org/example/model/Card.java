@@ -1,9 +1,6 @@
 package org.example.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -11,7 +8,7 @@ import lombok.Data;
 @Table(name="cards")
 public class Card {
     @Id
-    @GeneratedValue
+    @Column(name = "card_id")
     private String id;
     private String name;
     private String rarity;
