@@ -3,13 +3,22 @@ package org.example.api;
 import com.google.gson.*;
 import org.example.model.Card;
 import org.example.model.Set;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClient;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class PokemonTcgApiClient {
 
     private final Gson gson = new Gson();
+
+    private final RestClient restClient;
+
+    public PokemonTcgApiClient(RestClient restClient) {
+        this.restClient = restClient;
+    }
 
 
     public List<Set> parseSetsFromJson(String json) {
@@ -68,5 +77,21 @@ public class PokemonTcgApiClient {
         }
 
         return cards;
+    }
+
+    public String getSetsFromAPI() {
+        String url = "/sets";
+        return restClient.get()
+            .uri(url)
+            .retrieve()
+            .body(String.class);
+    }
+
+    public String getCardsFromAPI(String setName) {
+        String url = "/cards?q=set.name:" + setName;
+        return restClient.get()
+            .uri(url)
+            .retrieve()
+            .body(String.class);
     }
 }

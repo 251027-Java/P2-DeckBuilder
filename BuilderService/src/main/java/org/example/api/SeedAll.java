@@ -3,54 +3,67 @@ package org.example.api;
 import org.example.DBSetUp;
 import org.example.Repository.ICardRepository;
 import org.example.Repository.ISetRepository;
+import org.example.Repository.JdbcCardRepository;
 import org.example.config.ConfigApplicationProperties;
 import org.example.model.Set;
 import org.example.model.Card;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public class SeedAll {
+@Component
+public class SeedAll implements CommandLineRunner {
+
+    private ISetRepository setRepo;
+    private ICardRepository cardRepo;
+    private PokemonTcgApiClient apiClient;
+
+    public SeedAll(ISetRepository setRepo,
+                   ICardRepository cardRepo,
+                   PokemonTcgApiClient apiClient) {
+        this.setRepo = setRepo;
+        this.cardRepo = cardRepo;
+        this.apiClient = apiClient;
+    }
 
     private static String getUrl() {
         return ConfigApplicationProperties.getUrl();
     }
-
     private static String getUser() {
         return ConfigApplicationProperties.getUser();
     }
-
     private static String getPass() {
         return ConfigApplicationProperties.getPass();
     }
 
-    public static void main(String[] args) {
+    @Override
+    public void run(String[] args) {
         try {
             Properties props = new Properties();
             DBSetUp.ensureSchema();
 
-            //JdbcSetRepository setRepo = new JdbcSetRepository();
-            //JdbcCardRepository cardRepo = new JdbcCardRepository();
-            PokemonTcgApiClient apiClient = new PokemonTcgApiClient();
-
             System.out.println("---- DB Connection Info ----");
-            //setRepo.debugConnection();
 
 
-            //seedSetsFromJson(setRepo, apiClient, "/sets.json");
+            String jsonSets = apiClient.getSetsFromAPI();
+            seedSetsFromJson(setRepo, apiClient, jsonSets);
 
-            String[] cardFiles = {
-                    "/cards_base1.json"
-                    // "/cards_base2.json",
-                    // "/cards_base3.json"
-            };
-            //seedCardsFromJsonFiles(cardRepo, apiClient, cardFiles);
+            // Run seed cards once for each set of cards
+            String jsonCards_Base1 = apiClient.getCardsFromAPI("base1");
+            String jsonCards_Base2 = apiClient.getCardsFromAPI("base2");
+            String jsonCards_Base3 = apiClient.getCardsFromAPI("base3");
+            String jsonCards_Base4 = apiClient.getCardsFromAPI("base4");
+            String jsonCards_Base5 = apiClient.getCardsFromAPI("base5");
 
+            seedCardsFromJsonFiles(cardRepo, apiClient, jsonCards_Base1);
+            seedCardsFromJsonFiles(cardRepo, apiClient, jsonCards_Base2);
+            seedCardsFromJsonFiles(cardRepo, apiClient, jsonCards_Base3);
+            seedCardsFromJsonFiles(cardRepo, apiClient, jsonCards_Base4);
+            seedCardsFromJsonFiles(cardRepo, apiClient, jsonCards_Base5);
 
             seedDemoDeckAndCards();
 
@@ -64,52 +77,40 @@ public class SeedAll {
 
     private static void seedSetsFromJson(ISetRepository setRepo,
                                          PokemonTcgApiClient apiClient,
-                                         String resourcePath) {
+                                         String jsonSets) {
         try {
-            String json = loadResource(resourcePath);
-            List<Set> sets = apiClient.parseSetsFromJson(json);
+            List<Set> sets = apiClient.parseSetsFromJson(jsonSets);
 
-            System.out.println("Parsed " + sets.size() + " sets from " + resourcePath);
+            System.out.println("Parsed " + sets.size() + " sets from API");
 
             for (Set s : sets) {
                 setRepo.save(s); // should be safe if save() uses ON CONFLICT
             }
 
-            //System.out.println("Sets count after seeding = " + setRepo.countSets());
-
-        } catch (IOException e) {
-            System.out.println("No " + resourcePath + " found. Skipping sets seeding.");
-        } catch (Exception e) {
+        }catch (Exception e) {
             System.out.println("Error seeding sets: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
 
-    private static void seedCardsFromJsonFiles(//JdbcCardRepository
-                                               ICardRepository cardRepo,
+    private static void seedCardsFromJsonFiles(ICardRepository cardRepo,
                                                PokemonTcgApiClient apiClient,
-                                               String[] resourcePaths) {
+                                               String jsonCards) {
         int totalInserted = 0;
+        try {
+            List<Card> cards = apiClient.parseCardsFromJson(jsonCards);
 
-        for (String path : resourcePaths) {
-            try {
-                String json = loadResource(path);
-                List<Card> cards = apiClient.parseCardsFromJson(json);
+            System.out.println("Parsed " + cards.size() + " cards from json");
 
-                System.out.println("Parsed " + cards.size() + " cards from " + path);
-
-                for (Card c : cards) {
-                    cardRepo.save(c);
-                    totalInserted++;
-                }
-
-            } catch (IOException e) {
-                System.out.println("No " + path + " found. Skipping this cards file.");
-            } catch (Exception e) {
-                System.out.println("Error seeding cards from " + path + ": " + e.getMessage());
-                e.printStackTrace();
+            for (Card c : cards) {
+                cardRepo.save(c);
+                totalInserted++;
             }
+
+        } catch (Exception e) {
+            System.out.println("Error seeding cards: " + e.getMessage());
+            e.printStackTrace();
         }
 
         System.out.println("Cards count after seeding = " + cardRepo.findAll().size());
@@ -186,14 +187,6 @@ public class SeedAll {
         } catch (Exception e) {
             System.out.println("Error seeding decks/deck_cards: " + e.getMessage());
             e.printStackTrace();
-        }
-    }
-
-
-    private static String loadResource(String path) throws IOException {
-        try (InputStream is = SeedAll.class.getResourceAsStream(path)) {
-            if (is == null) throw new IOException("Resource not found: " + path);
-            return new String(is.readAllBytes(), StandardCharsets.UTF_8);
         }
     }
 }
