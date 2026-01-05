@@ -88,10 +88,36 @@ public class PokemonTcgApiClient {
     }
 
     public String getCardsFromAPI(String setName) {
-        String url = "/cards?q=set.name:" + setName;
+
+        // 1. Resolve set ID (fast)
+        String setJson = restClient.get()
+            .uri(uriBuilder -> uriBuilder
+                .path("/sets")
+                .queryParam("q", "name:" + setName)
+                .queryParam("select", "id")
+                .build())
+            .retrieve()
+            .body(String.class);
+    
+        JsonObject setRoot = JsonParser.parseString(setJson).getAsJsonObject();
+        JsonArray setData = setRoot.getAsJsonArray("data");
+    
+        if (setData.isEmpty()) {
+            throw new IllegalStateException("No set found: " + setName);
+        }
+    
+        String setId = setData.get(0).getAsJsonObject().get("id").getAsString();
+    
+        // 2. Query cards using set.id (fast)
         return restClient.get()
-            .uri(url)
+            .uri(uriBuilder -> uriBuilder
+                .path("/cards")
+                .queryParam("q", "set.id:" + setId)
+                .queryParam("select", "name,types,rarity")
+                .queryParam("pageSize", 1)
+                .build())
             .retrieve()
             .body(String.class);
     }
+    
 }
