@@ -2,13 +2,11 @@ package org.example.Repository;
 
 import org.example.config.ConfigApplicationProperties;
 import org.example.model.Deck;
-import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository
 public class JdbcDeckRepository implements IDeckRepository {
 
     private static final String URL  = ConfigApplicationProperties.getUrl();

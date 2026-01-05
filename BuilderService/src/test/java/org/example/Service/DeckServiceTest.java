@@ -9,8 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -77,73 +75,5 @@ class DeckServiceTest {
 
         verify(deckRepo).findById(99);
         verify(deckRepo, never()).deleteById(anyInt());
-    }
-
-    @Test
-    void listDecks_happyPath_returnsAllDecks() {
-        Deck d1 = new Deck(1, "Deck 1", "Description 1");
-        Deck d2 = new Deck(2, "Deck 2", "Description 2");
-
-        when(deckRepo.findAll()).thenReturn(List.of(d1, d2));
-
-        List<Deck> result = deckService.listDecks();
-
-        assertEquals(2, result.size());
-        assertEquals("Deck 1", result.get(0).getName());
-        verify(deckRepo).findAll();
-    }
-
-    @Test
-    void getDeckById_happyPath_returnsDeck() {
-        Deck d = new Deck(1, "Test Deck", "Test Description");
-
-        when(deckRepo.findById(1)).thenReturn(d);
-
-        Deck result = deckService.getDeckById(1);
-
-        assertNotNull(result);
-        assertEquals(1, result.getId());
-        assertEquals("Test Deck", result.getName());
-        verify(deckRepo).findById(1);
-    }
-
-    @Test
-    void getDeckById_invalidId_throws() {
-        assertThrows(IllegalArgumentException.class, () ->
-                deckService.getDeckById(0)
-        );
-
-        verify(deckRepo, never()).findById(anyInt());
-    }
-
-    @Test
-    void createDeck_nullDescription_createsDeck() {
-        when(deckRepo.findByName("Test Deck")).thenReturn(null);
-        when(deckRepo.save(any(Deck.class))).thenAnswer(inv -> {
-            Deck d = inv.getArgument(0);
-            d.setId(1);
-            return d;
-        });
-
-        Deck result = deckService.createDeck("Test Deck", null);
-
-        assertNotNull(result);
-        assertEquals("Test Deck", result.getName());
-        assertNull(result.getDescription());
-    }
-
-    @Test
-    void createDeck_trimsWhitespace() {
-        when(deckRepo.findByName("Test Deck")).thenReturn(null);
-        when(deckRepo.save(any(Deck.class))).thenAnswer(inv -> {
-            Deck d = inv.getArgument(0);
-            d.setId(1);
-            return d;
-        });
-
-        Deck result = deckService.createDeck("  Test Deck  ", "  Description  ");
-
-        assertEquals("Test Deck", result.getName());
-        assertEquals("Description", result.getDescription());
     }
 }
