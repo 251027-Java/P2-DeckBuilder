@@ -10,6 +10,7 @@ import DeckList from './components/decks/DeckList';
 import DeckBuilder from './components/decks/DeckBuilder';
 import CollectionView from './components/collection/CollectionView';
 import TradeCenter from './components/trades/TradeCenter';
+import DeckBuilderPage from './pages/DeckBuilderPage';
 
 const App: React.FC = () => {
   return (
@@ -40,7 +41,7 @@ const App: React.FC = () => {
           path="/decks/new"
           element={
             <PrivateRoute>
-              <DeckBuilder />
+              <DeckBuilderPage />
             </PrivateRoute>
           }
         />
