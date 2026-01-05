@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/set")
+@RequestMapping("/sets")
 public class SetController {
     private final SetService service;
 
@@ -28,6 +28,13 @@ public class SetController {
         return service.getByName(name);
     }
 
+    /**
+     * Get all sets endpoint with sync logic:
+     * 1. Check DB for sets
+     * 2. If empty, fetch from Pokemon TCG API
+     * 3. Persist response to DB
+     * Example: /sets
+     */
     @GetMapping
     public List<SetDTO> getAllSets() {
         return service.getAllSets();

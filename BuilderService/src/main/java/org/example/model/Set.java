@@ -8,7 +8,8 @@ import lombok.Data;
 @Table(name="sets")
 public class Set {
     // Fields
-    @Id @GeneratedValue
+    @Id
+    @Column(name = "set_id")
     private String id;
     
     private String name;
