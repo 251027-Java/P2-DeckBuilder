@@ -7,8 +7,8 @@ import org.example.api.dto.PokemonTcgCardResponse;
 import org.example.api.dto.PokemonTcgSetResponse;
 import org.example.model.Card;
 import org.example.model.Set;
-import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClient;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -16,7 +16,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-@Service
+@Component
 public class PokemonTcgApiClient {
 
     private final Gson gson = new Gson();
@@ -55,89 +55,12 @@ public class PokemonTcgApiClient {
                 return new ArrayList<>();
             }
 
-            return mapCardsFromResponse(response);
-        } catch (Exception e) {
-            // Log error and return empty list
-            System.err.println("Error fetching cards from Pokemon TCG API: " + e.getMessage());
-            return new ArrayList<>();
-        }
+    private final RestClient restClient;
+
+    public PokemonTcgApiClient(RestClient restClient) {
+        this.restClient = restClient;
     }
 
-    /**
-     * Fetch all sets from Pokemon TCG API
-     * @return List of Set entities
-     */
-    public List<Set> fetchAllSets() {
-        if (webClient == null) {
-            throw new IllegalStateException("WebClient not initialized. Use constructor with WebClient parameter.");
-        }
-        try {
-            PokemonTcgSetResponse response = webClient.get()
-                    .uri("/sets")
-                    .retrieve()
-                    .bodyToMono(PokemonTcgSetResponse.class)
-                    .block();
-
-            if (response == null || response.getData() == null) {
-                return new ArrayList<>();
-            }
-
-            return mapSetsFromResponse(response);
-        } catch (Exception e) {
-            // Log error and return empty list
-            System.err.println("Error fetching sets from Pokemon TCG API: " + e.getMessage());
-            return new ArrayList<>();
-        }
-    }
-
-    /**
-     * Map PokemonTcgCardResponse to Card entities
-     */
-    private List<Card> mapCardsFromResponse(PokemonTcgCardResponse response) {
-        List<Card> cards = new ArrayList<>();
-        
-        for (PokemonTcgCardResponse.PokemonTcgCardData data : response.getData()) {
-            Card card = new Card();
-            card.setId(data.getId());
-            card.setName(data.getName());
-            card.setRarity(data.getRarity());
-            card.setCardType(data.getSupertype());
-            
-            if (data.getSet() != null) {
-                card.setSetId(data.getSet().getId());
-            }
-            
-            cards.add(card);
-        }
-        
-        return cards;
-    }
-
-    /**
-     * Map PokemonTcgSetResponse to Set entities
-     */
-    private List<Set> mapSetsFromResponse(PokemonTcgSetResponse response) {
-        List<Set> sets = new ArrayList<>();
-        
-        for (PokemonTcgSetResponse.PokemonTcgSetData data : response.getData()) {
-            Set set = new Set();
-            set.setId(data.getId());
-            set.setName(data.getName());
-            
-            // Extract year from releaseDate (format: YYYY-MM-DD)
-            if (data.getReleaseDate() != null && data.getReleaseDate().length() >= 4) {
-                try {
-                    set.setReleaseYear(Integer.parseInt(data.getReleaseDate().substring(0, 4)));
-                } catch (NumberFormatException e) {
-                    // Ignore and leave releaseYear null
-                }
-            }
-            
-            sets.add(set);
-        }
-        
-        return sets;
-    }
 
     // Keep the old JSON parsing methods for backward compatibility
     public List<Set> parseSetsFromJson(String json) {
@@ -196,5 +119,21 @@ public class PokemonTcgApiClient {
         }
 
         return cards;
+    }
+
+    public String getSetsFromAPI() {
+        String url = "/sets";
+        return restClient.get()
+            .uri(url)
+            .retrieve()
+            .body(String.class);
+    }
+
+    public String getCardsFromAPI(String setName) {
+        String url = "/cards?q=set.name:" + setName;
+        return restClient.get()
+            .uri(url)
+            .retrieve()
+            .body(String.class);
     }
 }
