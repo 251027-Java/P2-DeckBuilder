@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { FaUser, FaLock, FaEnvelope } from 'react-icons/fa';
 import { useAuthStore } from '../../store/authStore';
 import toast from 'react-hot-toast';
+import logoImage from '../../assets/images/logo.png';
 
 const Register: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -35,84 +36,190 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="flex items-center justify-center p-4">
+      {/* Pokémon Type Orbs Background Effect */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute top-20 left-10 w-32 h-32 rounded-full bg-red-500/10 blur-3xl"
+          animate={{ 
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.5, 0.3]
+          }}
+          transition={{ duration: 4, repeat: Infinity }}
+        />
+        <motion.div
+          className="absolute bottom-20 right-10 w-40 h-40 rounded-full bg-blue-500/10 blur-3xl"
+          animate={{ 
+            scale: [1, 1.3, 1],
+            opacity: [0.3, 0.5, 0.3]
+          }}
+          transition={{ duration: 5, repeat: Infinity, delay: 1 }}
+        />
+        <motion.div
+          className="absolute top-1/2 right-1/4 w-36 h-36 rounded-full bg-yellow-500/10 blur-3xl"
+          animate={{ 
+            scale: [1, 1.1, 1],
+            opacity: [0.2, 0.4, 0.2]
+          }}
+          transition={{ duration: 6, repeat: Infinity, delay: 2 }}
+        />
+      </div>
+
+      {/* Register Card */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="w-full max-w-md relative z-10"
       >
-        <div className="bg-white/80 backdrop-blur-xl border border-white/30 shadow-2xl p-8 rounded-3xl">
-          <div className="flex flex-col items-center mb-6">
-            <span className="text-pokemon-red text-5xl mb-3" role="img" aria-label="Pokeball">🎴</span>
-            <h1 className="text-2xl font-bold text-gray-800">Create Account</h1>
+        {/* Pokémon Card Style Border */}
+        <div className="absolute inset-0 bg-gradient-to-br from-yellow-400 via-red-500 to-blue-500 rounded-3xl blur-sm opacity-75"></div>
+        
+        <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden">
+          {/* Header with Pokémon Yellow Accent */}
+          <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 h-2"></div>
+          
+          <div className="p-8">
+            {/* Logo Section */}
+            <motion.div 
+              className="flex flex-col items-center mb-6"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-red-500 to-blue-500 rounded-full blur-xl opacity-30 animate-pulse"></div>
+                <img 
+                  src={logoImage}
+                  alt="Pokemon TCG Logo" 
+                  className="relative w-400 h-28 object-contain drop-shadow-xl"
+                />
+              </div>
+              <h1 className="mt-4 text-xl font-bold bg-gradient-to-r from-red-600 via-yellow-500 to-blue-600 bg-clip-text text-transparent">
+                Begin Your Journey!
+              </h1>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+            >
+              <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
+                New Trainer Registration
+              </h2>
+
+              <form onSubmit={handleSubmit} className="space-y-5">
+                {/* Username Input */}
+                <div className="relative group">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Trainer Name
+                  </label>
+                  <div className="relative">
+                    <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                    <input
+                      type="text"
+                      placeholder="Choose your trainer name"
+                      value={username}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all outline-none bg-gray-50 focus:bg-white font-medium"
+                      required
+                      autoFocus
+                    />
+                  </div>
+                </div>
+
+                {/* Email Input */}
+                <div className="relative group">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Email Address
+                  </label>
+                  <div className="relative">
+                    <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                    <input
+                      type="email"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all outline-none bg-gray-50 focus:bg-white font-medium"
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Password Input */}
+                <div className="relative group">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                    <input
+                      type="password"
+                      placeholder="Create a password"
+                      value={password}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all outline-none bg-gray-50 focus:bg-white font-medium"
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Confirm Password Input */}
+                <div className="relative group">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Confirm Password
+                  </label>
+                  <div className="relative">
+                    <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                    <input
+                      type="password"
+                      placeholder="Confirm your password"
+                      value={confirmPassword}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all outline-none bg-gray-50 focus:bg-white font-medium"
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Register Button */}
+                <motion.button
+                  type="submit"
+                  disabled={isLoading || !username || !email || !password || !confirmPassword}
+                  className="w-full mt-6 bg-gradient-to-r from-red-500 via-yellow-500 to-blue-500 text-white py-3.5 rounded-xl font-bold text-lg shadow-lg hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed transition-all relative overflow-hidden group"
+                  whileHover={{ scale: isLoading ? 1 : 1.02 }}
+                  whileTap={{ scale: isLoading ? 1 : 0.98 }}
+                >
+                  <span className="relative z-10 flex items-center justify-center gap-2">
+                    {isLoading ? 'Creating Account...' : 'Start Your Adventure'}
+                  </span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                </motion.button>
+              </form>
+
+              {/* Login Link */}
+              <motion.div 
+                className="mt-6 text-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+              >
+                <p className="text-gray-600">
+                  Already have an account?{' '}
+                  <Link 
+                    to="/login" 
+                    className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-blue-600 hover:from-red-500 hover:to-blue-500 transition-all"
+                  >
+                    Login here
+                  </Link>
+                </p>
+              </motion.div>
+            </motion.div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="relative">
-              <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 rounded-xl border focus:border-pokemon-blue focus:ring-2 focus:ring-pokemon-blue/20 transition-all outline-none bg-white/50"
-                required
-              />
-            </div>
-
-            <div className="relative">
-              <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 rounded-xl border focus:border-pokemon-blue focus:ring-2 focus:ring-pokemon-blue/20 transition-all outline-none bg-white/50"
-                required
-              />
-            </div>
-
-            <div className="relative">
-              <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 rounded-xl border focus:border-pokemon-blue focus:ring-2 focus:ring-pokemon-blue/20 transition-all outline-none bg-white/50"
-                required
-              />
-            </div>
-
-            <div className="relative">
-              <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="password"
-                placeholder="Confirm Password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 rounded-xl border focus:border-pokemon-blue focus:ring-2 focus:ring-pokemon-blue/20 transition-all outline-none bg-white/50"
-                required
-              />
-            </div>
-
-            <motion.button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-gradient-to-r from-pokemon-blue to-blue-600 text-white py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              {isLoading ? 'Creating...' : 'Register'}
-            </motion.button>
-          </form>
-
-          <p className="text-center mt-6 text-gray-600">
-            Already have an account?{' '}
-            <Link to="/login" className="text-pokemon-blue font-semibold hover:text-pokemon-red transition-colors">
-              Login here
-            </Link>
-          </p>
+          {/* Footer Accent */}
+          <div className="bg-gradient-to-r from-blue-500 to-red-500 h-2"></div>
         </div>
       </motion.div>
     </div>
