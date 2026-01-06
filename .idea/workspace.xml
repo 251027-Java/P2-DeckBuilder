@@ -1,89 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="4584f55e-c137-4ac5-a95e-1ab2dca4551f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/BuilderService" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/UserService/target/classes/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/UserService/target/classes/org/example/Controller/UserController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/UserService/target/classes/org/example/Controller/UserDTO.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/UserService/target/classes/org/example/Controller/UserWOIDDTO.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/UserService/target/classes/org/example/Main.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/UserService/target/classes/org/example/Repository/IUserRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/UserService/target/classes/org/example/Service/UserService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/UserService/target/classes/org/example/model/User.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/.idea/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DBSetUp.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Repository/ICardRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Repository/IDeckCardRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Repository/IDeckRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Repository/ISetRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Repository/JdbcCardRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Repository/JdbcDeckCardRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Repository/JdbcDeckRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Repository/JdbcSetRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Service/CardService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Service/DeckCardService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Service/DeckService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Service/SetService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/api/PokemonTcgApiClient.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/api/SeedAll.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/config/ConfigApplicationProperties.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/Card.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/Deck.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/DeckCardView.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/Set.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/cards_base1.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sets.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/Service/CardServiceTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/Service/DeckCardServiceTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/example/Service/DeckServiceTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/cards_base1.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/DBSetUp.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Main.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Repository/ICardRepository.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Repository/IDeckCardRepository.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Repository/IDeckRepository.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Repository/ISetRepository.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Repository/JdbcCardRepository.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Repository/JdbcDeckCardRepository.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Repository/JdbcDeckRepository.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Repository/JdbcSetRepository.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Service/CardService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Service/DeckCardService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Service/DeckService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Service/SetService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/api/PokemonTcgApiClient.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/api/SeedAll.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/model/Card.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/model/Deck.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/model/DeckCardView.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/model/Set.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/sets.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/org/example/Service/CardServiceTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/org/example/Service/DeckCardServiceTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/org/example/Service/DeckServiceTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/untitled/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/untitled/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/untitled/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/untitled/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/untitled/desktop.ini" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/desktop.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/untitled/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/untitled/src/main/java/org/example/Controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/org/example/Controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/untitled/src/main/java/org/example/Controller/UserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/org/example/Controller/UserDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/untitled/src/main/java/org/example/Controller/UserWOIDDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/org/example/Controller/UserWOIDDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/untitled/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/org/example/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/untitled/src/main/java/org/example/Repository/IUserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/org/example/Repository/IUserRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/untitled/src/main/java/org/example/Service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/org/example/Service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/untitled/src/main/java/org/example/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/org/example/model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/untitled/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/resources/application.properties" afterDir="false" />
+    <list default="true" id="4584f55e-c137-4ac5-a95e-1ab2dca4551f" name="Changes" comment="Adding images">
+      <change afterPath="$PROJECT_DIR$/Frontend/src/components/decks/DeckStack.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Frontend/src/pages/AllCardsPage.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Frontend/src/pages/DeckPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/components/auth/Register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/auth/Register.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/components/collection/CollectionView.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/collection/CollectionView.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/components/dashboard/Dashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/dashboard/Dashboard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/CardsPage.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/DashboardPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/DashboardPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/DeckBuilderPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/DeckBuilderPage.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,25 +25,38 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 0
-}]]></component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;natalia507&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/251027-Java/P2-DeckBuilder.git&quot;,
+    &quot;accountId&quot;: &quot;4943e403-df35-4f76-885c-1d1a02286a93&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="37NVfWVAGjF6czijs78oVw1OxiS" />
   <component name="ProjectViewState">
     <option name="autoscrollToSource" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "OrganizeProjects",
-    "kotlin-language-version-configured": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;DeckBuilder&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="4584f55e-c137-4ac5-a95e-1ab2dca4551f" name="Changes" comment="" />
@@ -120,6 +65,27 @@
       <option name="presentableId" value="Default" />
       <updated>1766743620495</updated>
     </task>
+    <task id="LOCAL-00001" summary="Adding images">
+      <option name="closed" value="true" />
+      <created>1767644321472</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1767644321472</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Adding images" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding images" />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
   </component>
 </project>

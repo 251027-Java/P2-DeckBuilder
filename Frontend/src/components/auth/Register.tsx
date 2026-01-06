@@ -28,7 +28,7 @@ const Register: React.FC = () => {
 
     try {
       await register(username, password, email);
-      navigate('/dashboard');
+      navigate('/decks/new');
     } catch (error) {
       // Error handled by store
     }
