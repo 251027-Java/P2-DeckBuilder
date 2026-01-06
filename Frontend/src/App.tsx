@@ -4,7 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import PrivateRoute from './routes/PrivateRoute';
 import StartPage from './pages/StartPage';
 import LoginPage from './pages/LoginPage';
-import Register from './components/auth/Register';
+import RegisterPage from './pages/RegisterPage';
 import Dashboard from './components/dashboard/Dashboard';
 import Navbar from './components/shared/Navbar';
 import DeckList from './components/decks/DeckList';
@@ -26,7 +26,7 @@ const App: React.FC = () => {
         <Route path="/start" element={<StartPage />} />
         {/* <Route path="/" element={<Navigate to="/login" />} /> */}
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route
           path="/dashboard"
           element={
