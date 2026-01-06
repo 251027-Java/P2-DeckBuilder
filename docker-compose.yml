@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   postgres:
-    image: sidneygil/deckbuilder-db:latest
+    image: sidneygil/deckbuilder-db:v16
     container_name: deckbuilder-postgres
     restart: unless-stopped
     ports:
