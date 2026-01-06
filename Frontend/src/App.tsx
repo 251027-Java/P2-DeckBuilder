@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import PrivateRoute from './routes/PrivateRoute';
+import StartPage from './pages/StartPage';
 import LoginPage from './pages/LoginPage';
 import Register from './components/auth/Register';
 import Dashboard from './components/dashboard/Dashboard';
@@ -18,7 +19,9 @@ const App: React.FC = () => {
       <Toaster position="top-right" />
       <Navbar />
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/" element={<StartPage />} />
+        <Route path="/start" element={<StartPage />} />
+        {/* <Route path="/" element={<Navigate to="/login" />} /> */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<Register />} />
         <Route
