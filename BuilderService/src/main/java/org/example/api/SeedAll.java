@@ -3,7 +3,6 @@ package org.example.api;
 import org.example.DBSetUp;
 import org.example.Repository.ICardRepository;
 import org.example.Repository.ISetRepository;
-import org.example.Repository.JdbcCardRepository;
 import org.example.config.ConfigApplicationProperties;
 import org.example.model.Set;
 import org.example.model.Card;
@@ -48,28 +47,81 @@ public class SeedAll implements CommandLineRunner {
 
             System.out.println("---- DB Connection Info ----");
 
+            // Step 1: Seed sets ONLY ONCE - Check if already seeded
+            System.out.println("\n=== Checking Sets ===");
+            long existingSetCount = setRepo.count();
+            
+            if (existingSetCount == 0) {
+                System.out.println("No sets found in database. Fetching from API...");
+                String jsonSets = null;
+                
+                try {
+                    jsonSets = apiClient.getSetsFromAPI();
+                } catch (Exception e) {
+                    System.out.println("ERROR: Failed to fetch sets from API: " + e.getMessage());
+                    System.out.println("The Pokemon TCG API may be down. Please try again later.");
+                    return;
+                }
+                
+                if (jsonSets == null || jsonSets.isEmpty()) {
+                    System.out.println("ERROR: No data returned from API");
+                    return;
+                }
+                
+                seedSetsFromJson(setRepo, apiClient, jsonSets);
+                Thread.sleep(2000);
+            } else {
+                System.out.println("Found " + existingSetCount + " sets already in database. Skipping set seeding.");
+            }
 
-            String jsonSets = apiClient.getSetsFromAPI();
-            seedSetsFromJson(setRepo, apiClient, jsonSets);
+            // Step 2: Seed cards for first 5 sets in database
+            System.out.println("\n=== Seeding Cards ===");
+            
+            List<Set> allSets = setRepo.findAll();
+            int setsToProcess = Math.min(5, allSets.size());
+            
+            System.out.println("Found " + allSets.size() + " total sets. Processing first " + setsToProcess + " sets...");
+            
+            for (int i = 0; i < setsToProcess; i++) {
+                Set set = allSets.get(i);
+                String setId = set.getId();
+                
+                try {
+                    // Check if cards already exist for this set
+                    long cardsInSet = cardRepo.countBySetId(setId);
+                    if (cardsInSet > 0) {
+                        System.out.println("Set '" + set.getName() + "' (ID: " + setId + ") already has " + cardsInSet + " cards. Skipping...");
+                        continue;
+                    }
+                    
+                    System.out.println("Fetching cards for set: " + set.getName() + " (ID: " + setId + ")");
+                    String jsonCards = apiClient.getCardsBySetId(setId);
+                    
+                    if (jsonCards == null || jsonCards.isEmpty()) {
+                        System.out.println("WARNING: No cards returned for set: " + set.getName());
+                        continue;
+                    }
+                    
+                    seedCardsFromJsonFiles(setRepo, cardRepo, apiClient, jsonCards, setId);
+                    
+                    // Rate limiting - wait between API calls
+                    Thread.sleep(1000);
+                } catch (Exception e) {
+                    System.out.println("ERROR seeding cards for set '" + set.getName() + "' (ID: " + setId + "): " + e.getMessage());
+                    // Continue with next set instead of failing
+                }
+            }
 
-            // Run seed cards once for each set of cards
-            String jsonCards_Base1 = apiClient.getCardsFromAPI("base1");
-            String jsonCards_Base2 = apiClient.getCardsFromAPI("base2");
-            String jsonCards_Base3 = apiClient.getCardsFromAPI("base3");
-            String jsonCards_Base4 = apiClient.getCardsFromAPI("base4");
-            String jsonCards_Base5 = apiClient.getCardsFromAPI("base5");
-
-            seedCardsFromJsonFiles(cardRepo, apiClient, jsonCards_Base1);
-            seedCardsFromJsonFiles(cardRepo, apiClient, jsonCards_Base2);
-            seedCardsFromJsonFiles(cardRepo, apiClient, jsonCards_Base3);
-            seedCardsFromJsonFiles(cardRepo, apiClient, jsonCards_Base4);
-            seedCardsFromJsonFiles(cardRepo, apiClient, jsonCards_Base5);
-
+            // Step 3: Seed demo deck
+            System.out.println("\n=== Seeding Demo Deck ===");
             seedDemoDeckAndCards();
 
-            System.out.println("Seeding complete.");
+            System.out.println("\n=== Seeding Complete ===");
+            System.out.println("Total sets in database: " + setRepo.count());
+            System.out.println("Total cards in database: " + cardRepo.count());
 
         } catch (Exception e) {
+            System.out.println("FATAL ERROR during seeding: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -83,37 +135,102 @@ public class SeedAll implements CommandLineRunner {
 
             System.out.println("Parsed " + sets.size() + " sets from API");
 
+            int savedCount = 0;
+            int skippedCount = 0;
+            
             for (Set s : sets) {
-                setRepo.save(s); // should be safe if save() uses ON CONFLICT
+                try {
+                    if (s.getId() == null || s.getId().isEmpty()) {
+                        System.out.println("WARNING: Skipping set with null/empty ID: " + s.getName());
+                        skippedCount++;
+                        continue;
+                    }
+                    
+                    // Check if set already exists before saving
+                    if (setRepo.existsById(s.getId())) {
+                        System.out.println("Set already exists: " + s.getName() + " (ID: " + s.getId() + ")");
+                        skippedCount++;
+                        continue;
+                    }
+                    
+                    setRepo.save(s);
+                    savedCount++;
+                } catch (Exception e) {
+                    System.out.println("ERROR saving set " + s.getName() + " (ID: " + s.getId() + "): " + e.getMessage());
+                    skippedCount++;
+                }
             }
+            
+            System.out.println("Successfully saved " + savedCount + " new sets");
+            System.out.println("Skipped " + skippedCount + " sets (already exist or invalid)");
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Error seeding sets: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
 
-    private static void seedCardsFromJsonFiles(ICardRepository cardRepo,
+    private static void seedCardsFromJsonFiles(ISetRepository setRepo,
+                                               ICardRepository cardRepo,
                                                PokemonTcgApiClient apiClient,
-                                               String jsonCards) {
+                                               String jsonCards,
+                                               String setId) {
         int totalInserted = 0;
+        int totalSkipped = 0;
         try {
+            if (jsonCards == null || jsonCards.isEmpty()) {
+                System.out.println("WARNING: Empty JSON for set: " + setId);
+                return;
+            }
+            
             List<Card> cards = apiClient.parseCardsFromJson(jsonCards);
-
-            System.out.println("Parsed " + cards.size() + " cards from json");
+            System.out.println("Parsed " + cards.size() + " cards from JSON for set: " + setId);
 
             for (Card c : cards) {
-                cardRepo.save(c);
-                totalInserted++;
+                try {
+                    // Validate card has required fields
+                    if (c.getId() == null || c.getId().isEmpty()) {
+                        System.out.println("WARNING: Skipping card with null/empty ID: " + c.getName());
+                        totalSkipped++;
+                        continue;
+                    }
+                    
+                    if (c.getSetId() == null || c.getSetId().isEmpty()) {
+                        System.out.println("WARNING: Skipping card with null/empty setId: " + c.getName() + " (ID: " + c.getId() + ")");
+                        totalSkipped++;
+                        continue;
+                    }
+                    
+                    // Check if the set exists before saving card
+                    if (!setRepo.existsById(c.getSetId())) {
+                        System.out.println("WARNING: Set ID '" + c.getSetId() + "' does not exist. Skipping card: " + c.getName());
+                        totalSkipped++;
+                        continue;
+                    }
+                    
+                    // Check if card already exists
+                    if (cardRepo.existsById(c.getId())) {
+                        totalSkipped++;
+                        continue;
+                    }
+                    
+                    cardRepo.save(c);
+                    totalInserted++;
+                    
+                } catch (Exception e) {
+                    System.out.println("ERROR saving card " + c.getName() + " (ID: " + c.getId() + "): " + e.getMessage());
+                    totalSkipped++;
+                }
             }
 
+            System.out.println("Set: " + setId + " - Inserted: " + totalInserted + ", Skipped: " + totalSkipped);
+            System.out.println("Total cards in database: " + cardRepo.count());
+
         } catch (Exception e) {
-            System.out.println("Error seeding cards: " + e.getMessage());
+            System.out.println("Error seeding cards for set " + setId + ": " + e.getMessage());
             e.printStackTrace();
         }
-
-        System.out.println("Cards count after seeding = " + cardRepo.findAll().size());
     }
 
 
@@ -125,7 +242,6 @@ public class SeedAll implements CommandLineRunner {
 
         try (Connection conn = DriverManager.getConnection(getUrl(), getUser(), getPass())) {
             conn.setAutoCommit(false);
-
 
             int deckId;
             String upsertDeck = """
@@ -145,7 +261,6 @@ public class SeedAll implements CommandLineRunner {
                 }
             }
 
-
             List<String> cardIds = new ArrayList<>();
             try (PreparedStatement ps = conn.prepareStatement(
                     "SELECT id FROM cards ORDER BY id LIMIT 3");
@@ -160,7 +275,6 @@ public class SeedAll implements CommandLineRunner {
                 conn.rollback();
                 return;
             }
-
 
             String upsertDeckCards = """
                 INSERT INTO deck_cards (deck_id, card_id, quantity)

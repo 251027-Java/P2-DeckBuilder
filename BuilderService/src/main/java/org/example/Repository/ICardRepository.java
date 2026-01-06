@@ -9,4 +9,5 @@ import java.util.Optional;
 
 public interface ICardRepository extends JpaRepository<Card, String> {
     List<Card> findBySetId(String setId);
+    long countBySetId(String setId); 
 }

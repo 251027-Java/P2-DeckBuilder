@@ -11,7 +11,6 @@ import lombok.Data;
 @Table(name="cards")
 public class Card {
     @Id
-    @GeneratedValue
     private String id;
     private String name;
     private String rarity;
