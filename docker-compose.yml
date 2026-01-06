@@ -16,17 +16,69 @@ services:
     networks:
       - deckbuilder-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d deckbuilderdb"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-# Named volumes for data persistence
+  eureka-server:
+    build: ./eureka-server
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - deckbuilder-network
+
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    depends_on:
+      - eureka-server
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/deckbuilderdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: mysecretpassword
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+    ports:
+      - "8082:8082"
+    networks:
+      - deckbuilder-network
+
+  builder-service:
+    build: ./builder-service
+    container_name: builder-service
+    depends_on:
+      - eureka-server
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/deckbuilderdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: mysecretpassword
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+    ports:
+      - "8081:8081"
+    networks:
+      - deckbuilder-network
+
+  gateway:
+    build: ./gateway
+    container_name: gateway
+    depends_on:
+      - eureka-server
+      - user-service
+      - builder-service
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+    ports:
+      - "8080:8080"
+    networks:
+      - deckbuilder-network
+
 volumes:
   postgres-data:
     driver: local
 
-# Network for service communication
 networks:
   deckbuilder-network:
     driver: bridge
