@@ -11,6 +11,9 @@ import DeckBuilder from './components/decks/DeckBuilder';
 import CollectionView from './components/collection/CollectionView';
 import TradeCenter from './components/trades/TradeCenter';
 import DeckBuilderPage from './pages/DeckBuilderPage';
+import DeckView from './components/decks/DeckView';
+import DeckPage from './pages/DeckPage';
+import AllCardsPage from './pages/AllCardsPage';
 
 const App: React.FC = () => {
   return (
@@ -61,6 +64,31 @@ const App: React.FC = () => {
             </PrivateRoute>
           }
         />
+        <Route
+            path="/deck-view"
+            element={
+                <PrivateRoute>
+                    <DeckView />
+                </PrivateRoute>
+            }
+        />
+        <Route
+          path="/decks/:deckId"
+          element={
+            <PrivateRoute>
+              <DeckPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/all-cards"
+          element={
+            <PrivateRoute>
+              <AllCardsPage />
+            </PrivateRoute>
+          }
+        />
+
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </BrowserRouter>
