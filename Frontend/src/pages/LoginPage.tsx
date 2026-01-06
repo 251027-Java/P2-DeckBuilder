@@ -1,32 +1,79 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Login from '../components/auth/Login';
 import backgroundImage from '../assets/images/background.png';
+import pokeballIcon from '../assets/images/pokeballIcon.png';
+import pikachuIcon from '../assets/images/pikachu.png';
+import bulbasaurIcon from '../assets/images/bulbasaur.png';
+import eeveeIcon from '../assets/images/eevee.png';
+import gengarIcon from '../assets/images/gengar.png';
+import lugiaIcon from '../assets/images/lugia.png';
+
+interface PokeballPosition {
+  x: number;
+  y: number;
+}
 
 const LoginPage: React.FC = () => {
+  const [pokeballPaths, setPokeballPaths] = useState<PokeballPosition[][]>([]);
+
+  const generateRandomPath = () => {
+    const path: PokeballPosition[] = [];
+    const numPoints = 4 + Math.floor(Math.random() * 3); // 4-6 waypoints
+    
+    for (let i = 0; i < numPoints; i++) {
+      path.push({
+        x: Math.random() * 150 - 75, // -75vw to 75vw
+        y: Math.random() * 100 - 50, // -50vh to 50vh
+      });
+    }
+    
+    // Move off-screen before resetting
+    const exitDirection = Math.random();
+    if (exitDirection < 0.25) {
+      // Exit top
+      path.push({ x: Math.random() * 100 - 50, y: -120 });
+    } else if (exitDirection < 0.5) {
+      // Exit right
+      path.push({ x: 120, y: Math.random() * 100 - 50 });
+    } else if (exitDirection < 0.75) {
+      // Exit bottom
+      path.push({ x: Math.random() * 100 - 50, y: 120 });
+    } else {
+      // Exit left
+      path.push({ x: -120, y: Math.random() * 100 - 50 });
+    }
+    
+    // Return to start (will be instant as it's the last keyframe)
+    path.push({ x: 0, y: 0 });
+    return path;
+  };
+
+  useEffect(() => {
+    // Generate initial paths for 6 pokeballs
+    const initialPaths = Array.from({ length: 6 }, () => generateRandomPath());
+    setPokeballPaths(initialPaths);
+
+    // Regenerate random paths every 20 seconds
+    const interval = setInterval(() => {
+      const newPaths = Array.from({ length: 6 }, () => generateRandomPath());
+      setPokeballPaths(newPaths);
+    }, 20000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const generateKeyframes = (path: PokeballPosition[], index: number) => {
+    const keyframes = path.map((point, i) => {
+      const percent = (i / (path.length - 1)) * 100;
+      return `${percent}% { transform: translate(${point.x}vw, ${point.y}vh); }`;
+    }).join('\n          ');
+    
+    return `@keyframes randomFloat-${index} {\n          ${keyframes}\n        }`;
+  };
   return (
     <>
       <style>{`
-        @keyframes float-1 {
-          0% { transform: translate(0, 0) rotate(0deg) scale(1); }
-          20% { transform: translate(45vw, -25vh) rotate(45deg) scale(1.15); }
-          40% { transform: translate(70vw, 15vh) rotate(90deg) scale(0.95); }
-          60% { transform: translate(50vw, 40vh) rotate(180deg) scale(1.1); }
-          80% { transform: translate(20vw, 20vh) rotate(270deg) scale(0.9); }
-          100% { transform: translate(0, 0) rotate(360deg) scale(1); }
-        }
-        @keyframes float-2 {
-          0% { transform: translate(0, 0) rotate(0deg) scale(1); }
-          25% { transform: translate(-30vw, 35vh) rotate(-60deg) scale(1.2); }
-          50% { transform: translate(40vw, -15vh) rotate(120deg) scale(0.85); }
-          75% { transform: translate(-10vw, 25vh) rotate(240deg) scale(1.05); }
-          100% { transform: translate(0, 0) rotate(360deg) scale(1); }
-        }
-        @keyframes float-3 {
-          0% { transform: translate(0, 0) rotate(0deg) scale(1); }
-          30% { transform: translate(55vw, 30vh) rotate(90deg) scale(1.1); }
-          60% { transform: translate(-25vw, -20vh) rotate(180deg) scale(0.9); }
-          100% { transform: translate(0, 0) rotate(360deg) scale(1); }
-        }
+        ${pokeballPaths.map((path, i) => generateKeyframes(path, i)).join('\n        ')}
         @keyframes pulse-bg {
           0%, 100% { opacity: 0.3; }
           50% { opacity: 0.7; }
@@ -98,97 +145,31 @@ const LoginPage: React.FC = () => {
           }} 
         />
 
-        {/* Large Floating Pokéballs - Moving Randomly Across Screen */}
+        {/* Multiple Floating Pokéballs - Random Paths */}
         <div style={{ position: 'absolute', inset: 0, zIndex: 1, opacity: 0.15 }}>
-          {[
-            { anim: 'float-1', dur: 20, delay: 0 },
-            { anim: 'float-2', dur: 18, delay: 2 },
-            { anim: 'float-3', dur: 22, delay: 4 },
-            { anim: 'float-1', dur: 24, delay: 6 },
-            { anim: 'float-2', dur: 19, delay: 8 },
-            { anim: 'float-3', dur: 21, delay: 10 },
+          {pokeballPaths.length > 0 && [
+            { startLeft: '10%', startTop: '20%', icon: pikachuIcon, alt: 'Pikachu', size: 200 },
+            { startLeft: '80%', startTop: '70%', icon: bulbasaurIcon, alt: 'Bulbasaur', size: 200 },
+            { startLeft: '20%', startTop: '60%', icon: eeveeIcon, alt: 'Eevee', size: 200 },
+            { startLeft: '90%', startTop: '30%', icon: gengarIcon, alt: 'Gengar', size: 200 },
+            { startLeft: '5%', startTop: '80%', icon: lugiaIcon, alt: 'Lugia', size: 200 },
+            { startLeft: '70%', startTop: '15%', icon: pokeballIcon, alt: 'Pokeball', size: 100 },
           ].map((config, i) => (
-            <div
+            <img
               key={i}
+              src={config.icon}
+              alt={config.alt}
               style={{
                 position: 'absolute',
-                width: '120px',
-                height: '120px',
-                borderRadius: '50%',
-                border: '8px solid white',
-                left: `${10 + i * 12}%`,
-                top: `${15 + (i % 3) * 30}%`,
-                animation: `${config.anim} ${config.dur}s ease-in-out infinite`,
-                animationDelay: `${config.delay}s`,
+                width: `${config.size}px`,
+                height: `${config.size}px`,
+                left: config.startLeft,
+                top: config.startTop,
+                animation: `randomFloat-${i} 20s linear infinite`,
               }}
-            >
-              <div style={{
-                position: 'absolute',
-                top: '50%',
-                left: 0,
-                right: 0,
-                height: '8px',
-                background: 'white',
-                transform: 'translateY(-50%)',
-              }} />
-              <div style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                width: '32px',
-                height: '32px',
-                background: 'white',
-                borderRadius: '50%',
-                transform: 'translate(-50%, -50%)',
-                border: '4px solid #374151',
-              }} />
-            </div>
+            />
           ))}
         </div>
-
-        {/* Glowing Energy Orbs - Wandering Randomly */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '10%',
-            left: '10%',
-            width: '300px',
-            height: '300px',
-            borderRadius: '50%',
-            background: 'rgba(239, 68, 68, 0.45)',
-            filter: 'blur(75px)',
-            zIndex: 1,
-            animation: 'orb-wander-1 16s ease-in-out infinite',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '15%',
-            right: '10%',
-            width: '350px',
-            height: '350px',
-            borderRadius: '50%',
-            background: 'rgba(59, 130, 246, 0.45)',
-            filter: 'blur(75px)',
-            zIndex: 1,
-            animation: 'orb-wander-2 20s ease-in-out infinite',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            top: '40%',
-            left: '55%',
-            width: '280px',
-            height: '280px',
-            borderRadius: '50%',
-            background: 'rgba(34, 197, 94, 0.45)',
-            filter: 'blur(75px)',
-            zIndex: 1,
-            animation: 'orb-wander-3 24s ease-in-out infinite',
-          }}
-        />
 
         {/* Login Component */}
         <div style={{ position: 'relative', zIndex: 10 }}>

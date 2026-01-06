@@ -1,0 +1,9 @@
+FROM postgres:16
+
+# Set environment variables
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=mysecretpassword
+ENV POSTGRES_DB=deckbuilderdb
+
+# Copy initialization script with all data (170 sets, 1370 cards)
+COPY init-db.sql /docker-entrypoint-initdb.d/
