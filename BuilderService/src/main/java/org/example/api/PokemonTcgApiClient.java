@@ -6,6 +6,10 @@ import org.example.model.Set;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +45,7 @@ public class PokemonTcgApiClient {
             }
 
             Set s = new Set();
-            //s.setId(id);
+            s.setId(id);
             s.setName(name);
             s.setReleaseYear(releaseYear);
             result.add(s);
@@ -120,4 +124,18 @@ public class PokemonTcgApiClient {
             .body(String.class);
     }
     
+    public String getSetsFromFile() {
+        // return json as string
+        String setFile = "src/main/resources/sets.json";
+        Path path = Paths.get(setFile);
+
+        try {
+            String jsonSets = Files.readString(path);
+            return jsonSets;
+
+        } catch(IOException e) {
+            System.out.println("No set file");
+            return "";
+        }
+    }
 }

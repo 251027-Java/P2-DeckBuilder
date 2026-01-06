@@ -3,7 +3,6 @@ package org.example.api;
 import org.example.DBSetUp;
 import org.example.Repository.ICardRepository;
 import org.example.Repository.ISetRepository;
-import org.example.Repository.JdbcCardRepository;
 import org.example.config.ConfigApplicationProperties;
 import org.example.model.Set;
 import org.example.model.Card;
@@ -49,23 +48,24 @@ public class SeedAll implements CommandLineRunner {
             System.out.println("---- DB Connection Info ----");
 
 
-            String jsonSets = apiClient.getSetsFromAPI();
+            //String jsonSets = apiClient.getSetsFromAPI();
+            String jsonSets = apiClient.getSetsFromFile();
             seedSetsFromJson(setRepo, apiClient, jsonSets);
 
             // Run seed cards once for each set of cards
-            String jsonCards_Base1 = apiClient.getCardsFromAPI("base1");
-            String jsonCards_Base2 = apiClient.getCardsFromAPI("base2");
-            String jsonCards_Base3 = apiClient.getCardsFromAPI("base3");
-            String jsonCards_Base4 = apiClient.getCardsFromAPI("base4");
-            String jsonCards_Base5 = apiClient.getCardsFromAPI("base5");
+            // String jsonCards_Base1 = apiClient.getCardsFromAPI("Black Bolt");
+            // String jsonCards_Base2 = apiClient.getCardsFromAPI("White Flare");
+            // String jsonCards_Base3 = apiClient.getCardsFromAPI("Mega Evolution");
+            // String jsonCards_Base4 = apiClient.getCardsFromAPI("Stellar Crown");
+            // String jsonCards_Base5 = apiClient.getCardsFromAPI("Temporal Forces");
 
-            seedCardsFromJsonFiles(cardRepo, apiClient, jsonCards_Base1);
-            seedCardsFromJsonFiles(cardRepo, apiClient, jsonCards_Base2);
-            seedCardsFromJsonFiles(cardRepo, apiClient, jsonCards_Base3);
-            seedCardsFromJsonFiles(cardRepo, apiClient, jsonCards_Base4);
-            seedCardsFromJsonFiles(cardRepo, apiClient, jsonCards_Base5);
+            // seedCardsFromJsonFiles(cardRepo, apiClient, jsonCards_Base1);
+            // seedCardsFromJsonFiles(cardRepo, apiClient, jsonCards_Base2);
+            // seedCardsFromJsonFiles(cardRepo, apiClient, jsonCards_Base3);
+            // seedCardsFromJsonFiles(cardRepo, apiClient, jsonCards_Base4);
+            // seedCardsFromJsonFiles(cardRepo, apiClient, jsonCards_Base5);
 
-            seedDemoDeckAndCards();
+            // seedDemoDeckAndCards();
 
             System.out.println("Seeding complete.");
 

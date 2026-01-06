@@ -8,7 +8,7 @@ import lombok.Data;
 @Table(name="sets")
 public class Set {
     // Fields
-    @Id @GeneratedValue
+    @Id
     private String id;
     
     private String name;
@@ -16,7 +16,8 @@ public class Set {
 
     // Constructors
     public Set() {}
-    public Set(String name, Integer releaseYear) {
+    public Set(String id, String name, Integer releaseYear) {
+        this.id = id;
         this.name = name;
         this.releaseYear = releaseYear;
     }
