@@ -18,13 +18,16 @@ public class DeckService {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Deck name cannot be empty.");
         }
+        // Trim name before checking for duplicates
+        String trimmedName = name.trim();
+        String trimmedDescription = description == null ? null : description.trim();
 
-        Deck existing = deckRepo.findByName(name);
+        Deck existing = deckRepo.findByName(trimmedName);
         if (existing != null) {
             throw new IllegalArgumentException("A deck with that name already exists.");
         }
 
-        Deck deck = new Deck(name.trim(), description == null ? null : description.trim());
+        Deck deck = new Deck(trimmedName, trimmedDescription);
         return deckRepo.save(deck);
     }
 
