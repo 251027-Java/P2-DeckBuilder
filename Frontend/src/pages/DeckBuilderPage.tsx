@@ -26,7 +26,8 @@ type Card = {
   rarity: string;
   cardType: string; // Backend returns 'cardType'
   setId: string;
-  imageUrl?: string; // We'll generate this on frontend
+  setName?: string; // Set name from backend
+  imageUrl?: string; // generate this on frontend
 };
 
 type Deck = {
@@ -91,7 +92,7 @@ const DeckBuilderPage: React.FC = () => {
   
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const CARDS_PER_PAGE = 20;
+  const CARDS_PER_PAGE = 24;
 
   const [activeCard, setActiveCard] = useState<Card | null>(null);
   const [quantityToAdd, setQuantityToAdd] = useState(1);
@@ -113,19 +114,26 @@ const DeckBuilderPage: React.FC = () => {
       setBusy("loading");
       setError(null);
       try {
-        const [cardsRes, decksData] = await Promise.all([
+        const [cardsRes, decksData, setsRes] = await Promise.all([
           fetch(`http://localhost:8081/card`),
           deckService.getDecks(),
+          fetch(`http://localhost:8081/set`),
         ]);
 
         if (!cardsRes.ok) throw new Error(`Cards failed: ${cardsRes.status}`);
+        if (!setsRes.ok) throw new Error(`Sets failed: ${setsRes.status}`);
 
         const cardsData: Card[] = await cardsRes.json();
+        const setsData: any[] = await setsRes.json();
         
-        // Add imageUrl to each card
+        // Create a map of setId -> setName for quick lookup
+        const setMap = new Map(setsData.map(set => [set.id, set.name]));
+        
+        // Add imageUrl and setName to each card
         const cardsWithImages = cardsData.map(card => ({
           ...card,
-          imageUrl: getCardImageUrl(card.id)
+          imageUrl: getCardImageUrl(card.id),
+          setName: setMap.get(card.setId) || card.setId, // Fallback to setId if name not found
         }));
 
         setCards(cardsWithImages);
@@ -700,10 +708,7 @@ const DeckBuilderPage: React.FC = () => {
 
                 {/* Pagination Controls */}
                 {filteredCards.length > CARDS_PER_PAGE && (
-                  <div className="mt-4 flex items-center justify-between">
-                    <div className="text-sm text-black/70">
-                      Showing {((currentPage - 1) * CARDS_PER_PAGE) + 1} - {Math.min(currentPage * CARDS_PER_PAGE, filteredCards.length)} of {filteredCards.length} cards
-                    </div>
+                  <div className="mt-4 flex items-center justify-end">
                     <div className="flex gap-2">
                       <button
                         onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
@@ -759,7 +764,7 @@ const DeckBuilderPage: React.FC = () => {
                       <p className="text-sm text-gray-600">{activeCard.rarity}</p>
                     </div>
                     <div className="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                      Set: {activeCard.setId}
+                      Set: {activeCard.setName || activeCard.setId}
                     </div>
                   </div>
                   
