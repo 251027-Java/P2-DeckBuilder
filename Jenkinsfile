@@ -5,7 +5,16 @@ pipeline {
         jdk 'JDK25'
     }
 
+    triggers {
+        githubPush()
+    }
+
     stages {
+        stage('Build') {
+            steps {
+                echo "Building branch: ${env.BRANCH_NAME}"
+            }
+        }
         stage('Test') {
             steps {
                 sh 'chmod +x BuilderService/mvnw UserService/mvnw'
@@ -24,6 +33,12 @@ pipeline {
     }
 
     post {
+        success {
+            echo '✅✅✅ TEST PIPELINE IS SUCCESSFUL ✅✅✅'
+        }
+        failure {
+            echo '❌❌❌ TEST PIPELINE FAILED ❌❌❌'
+        }
         always {
             echo '📊 Publishing test results'
             junit allowEmptyResults: true,

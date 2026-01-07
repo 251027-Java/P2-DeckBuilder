@@ -5,17 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4584f55e-c137-4ac5-a95e-1ab2dca4551f" name="Changes" comment="Adding images">
-      <change afterPath="$PROJECT_DIR$/Frontend/src/components/decks/DeckStack.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Frontend/src/pages/AllCardsPage.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Frontend/src/pages/DeckPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/auth/Register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/auth/Register.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/components/collection/CollectionView.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/collection/CollectionView.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Frontend/src/components/dashboard/Dashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/components/dashboard/Dashboard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/CardsPage.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/DashboardPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/DashboardPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/pages/DeckBuilderPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/pages/DeckBuilderPage.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,16 +37,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;DeckBuilder&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "PlusButton",
+    "kotlin-language-version-configured": "true"
   }
-}</component>
+}]]></component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="4584f55e-c137-4ac5-a95e-1ab2dca4551f" name="Changes" comment="" />
@@ -73,12 +63,21 @@
       <option name="project" value="LOCAL" />
       <updated>1767644321472</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Updated the dashboard to have a plus icon">
+      <option name="closed" value="true" />
+      <created>1767804375629</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1767804375629</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Adding images" />
-    <option name="LAST_COMMIT_MESSAGE" value="Adding images" />
+    <MESSAGE value="Updated the dashboard to have a plus icon" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated the dashboard to have a plus icon" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
