@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaSearch, FaPlus, FaTrash } from "react-icons/fa";
+import { FaArrowLeft, FaSearch, FaPlus, FaMinus, FaTrash, FaExclamationTriangle } from "react-icons/fa";
 
 import bg from "../assets/images/background.png";
 import logo from "../assets/logo.png";
@@ -366,6 +366,48 @@ const DeckBuilderPage: React.FC = () => {
     }
   }
 
+  async function decrementCardInDeck(cardId: string, cardName: string, currentQuantity: number) {
+    if (!selectedDeckId) {
+      setError("Select a deck first");
+      return;
+    }
+
+    // If this is the last copy, show the confirmation modal
+    if (currentQuantity === 1) {
+      setCardToRemove({
+        cardId: cardId,
+        cardName: cardName,
+        currentQuantity: currentQuantity
+      });
+      setQuantityToRemove(1);
+      return;
+    }
+
+    // Otherwise, just decrement directly
+    setBusy("removeCard");
+    setError(null);
+    try {
+      const newQuantity = currentQuantity - 1;
+      
+      const deckResponse = await fetch(
+        `http://localhost:8081/deck-card?deckId=${selectedDeckId}&cardId=${cardId}&quantity=${newQuantity}`,
+        { method: 'POST' }
+      );
+      
+      if (deckResponse.ok) {
+        // Reload deck cards to reflect the change
+        const cardsResponse = await fetch(`http://localhost:8081/deck-card/deck/${selectedDeckId}`);
+        if (!cardsResponse.ok) throw new Error('Failed to reload deck');
+        const cards = await cardsResponse.json();
+        setDeckCards(cards);
+      }
+    } catch (e: any) {
+      setError(e?.message ?? "Failed to remove card from deck");
+    } finally {
+      setBusy(null);
+    }
+  }
+
   async function saveDeck() {
     // Note: Backend doesn't have an update endpoint yet
     // For now, just show a message
@@ -686,27 +728,30 @@ const DeckBuilderPage: React.FC = () => {
                         x{deckCard.quantity}
                       </div>
                       
-                      {/* Add button */}
-                      {deckCard.quantity < 4 && (
+                      {/* Buttons container */}
+                      <div className="absolute bottom-1 right-1 flex gap-1">
+                        {/* Decrement button */}
                         <button
-                          onClick={() => incrementCardInDeck(deckCard.cardId, deckCard.cardName, deckCard.quantity)}
-                          disabled={busy === "addToDeck"}
-                          className="absolute bottom-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-green-500 text-white hover:bg-green-600 disabled:opacity-50"
-                          title="Add one more copy"
+                          onClick={() => decrementCardInDeck(deckCard.cardId, deckCard.cardName, deckCard.quantity)}
+                          disabled={busy === "removeCard"}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-50"
+                          title="Remove one copy"
                         >
-                          <FaPlus className="w-3 h-3" />
+                          <FaMinus className="w-3 h-3" />
                         </button>
-                      )}
-                      
-                      {/* Remove button */}
-                      <button
-                        onClick={() => removeCardFromDeck(deckCard.cardId)}
-                        disabled={busy === "removeCard"}
-                        className="absolute top-1 left-1 opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-red-500 text-white hover:bg-red-600 disabled:opacity-50"
-                        title="Remove from deck"
-                      >
-                        <FaTrash className="w-3 h-3" />
-                      </button>
+                        
+                        {/* Increment button */}
+                        {deckCard.quantity < 4 && (
+                          <button
+                            onClick={() => incrementCardInDeck(deckCard.cardId, deckCard.cardName, deckCard.quantity)}
+                            disabled={busy === "addToDeck"}
+                            className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-green-500 text-white hover:bg-green-600 disabled:opacity-50"
+                            title="Add one more copy"
+                          >
+                            <FaPlus className="w-3 h-3" />
+                          </button>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -975,7 +1020,11 @@ const DeckBuilderPage: React.FC = () => {
         <Modal title="Delete Deck" onClose={() => setShowDeleteDeckConfirm(false)}>
           <div className="space-y-6">
             <div className="text-center">
-              <div className="text-6xl mb-4">⚠️</div>
+              <div className="flex justify-center mb-4">
+                <div className="bg-red-100 rounded-full p-4">
+                  <FaExclamationTriangle className="text-red-600 text-4xl" />
+                </div>
+              </div>
               <p className="text-gray-600">
                 Are you sure you want to delete <span className="font-bold">"{deckName}"</span>?
               </p>
@@ -1011,31 +1060,46 @@ const DeckBuilderPage: React.FC = () => {
           setQuantityToRemove(1);
         }}>
           <div className="space-y-6">
-            <div>
-              <p className="text-gray-600">
-                How many copies of <span className="font-bold">{cardToRemove.cardName}</span> would you like to remove?
-              </p>
-              <p className="text-sm text-gray-500 mt-1">
-                Currently in deck: {cardToRemove.currentQuantity} {cardToRemove.currentQuantity === 1 ? 'copy' : 'copies'}
-              </p>
+            <div className="text-center">
+              <div className="flex justify-center mb-4">
+                <div className="bg-orange-100 rounded-full p-4">
+                  <FaExclamationTriangle className="text-orange-600 text-4xl" />
+                </div>
+              </div>
+              {cardToRemove.currentQuantity === 1 ? (
+                <p className="text-gray-700 font-semibold text-lg">
+                  Are you sure you would like to fully remove <span className="font-bold text-red-600">{cardToRemove.cardName}</span> from the deck?
+                </p>
+              ) : (
+                <>
+                  <p className="text-gray-600">
+                    How many copies of <span className="font-bold">{cardToRemove.cardName}</span> would you like to remove?
+                  </p>
+                  <p className="text-sm text-gray-500 mt-2">
+                    Currently in deck: {cardToRemove.currentQuantity} {cardToRemove.currentQuantity === 1 ? 'copy' : 'copies'}
+                  </p>
+                </>
+              )}
             </div>
 
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                Quantity to Remove
-              </label>
-              <select
-                value={quantityToRemove}
-                onChange={(e) => setQuantityToRemove(Number(e.target.value))}
-                className="w-full rounded-xl px-4 py-3 border-2 border-gray-200 focus:border-black outline-none transition-all"
-              >
-                {Array.from({ length: cardToRemove.currentQuantity }, (_, i) => i + 1).map(num => (
-                  <option key={num} value={num}>
-                    {num} {num === 1 ? 'copy' : 'copies'}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {cardToRemove.currentQuantity > 1 && (
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">
+                  Quantity to Remove
+                </label>
+                <select
+                  value={quantityToRemove}
+                  onChange={(e) => setQuantityToRemove(Number(e.target.value))}
+                  className="w-full rounded-xl px-4 py-3 border-2 border-gray-200 focus:border-black outline-none transition-all"
+                >
+                  {Array.from({ length: cardToRemove.currentQuantity }, (_, i) => i + 1).map(num => (
+                    <option key={num} value={num}>
+                      {num} {num === 1 ? 'copy' : 'copies'}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
             
             <div className="flex gap-3">
               <button
@@ -1055,7 +1119,7 @@ const DeckBuilderPage: React.FC = () => {
                 disabled={busy === "removeCard"}
                 className="flex-1 px-4 py-3 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
-                {busy === "removeCard" ? "Removing..." : "Remove Card"}
+                {busy === "removeCard" ? "Removing..." : cardToRemove.currentQuantity === 1 ? "Fully Remove" : "Remove Card"}
               </button>
             </div>
           </div>
