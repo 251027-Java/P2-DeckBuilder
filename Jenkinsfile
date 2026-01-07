@@ -5,6 +5,10 @@ pipeline {
         jdk 'JDK25'
     }
 
+    triggers {
+        githubPush()
+    }
+
     stages {
         stage('Build') {
             steps {
