@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: sidneygil/deckbuilder-db:v16-multiplatform
+    image: sidneygil/deckbuilder-db:v16-with-data
     container_name: deckbuilder-postgres
     restart: unless-stopped
     ports:
