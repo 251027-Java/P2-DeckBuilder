@@ -18,6 +18,6 @@ public class WebConfig implements WebMvcConfigurer {
         // Checks requests except when creating account or logging in
         reg.addInterceptor(jwti)
                 .addPathPatterns("/**")
-                .excludePathPatterns("auth/register", "auth/login");
+                .excludePathPatterns("/auth/register", "/auth/login");
     }
 }

@@ -29,7 +29,8 @@ const Register: React.FC = () => {
 
     try {
       await register(username, password, email);
-      navigate('/decks/new');
+      toast.success('Registration successful! Please login.');
+      navigate('/login');
     } catch (error) {
       // Error handled by store
     }

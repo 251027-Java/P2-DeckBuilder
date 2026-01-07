@@ -7,13 +7,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
 import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
     public record AuthRequest(String username, String password){}
-    public record AuthResponse(String token){}
+    public record AuthResponse(String token, UserDTO user){}
 
     private final UserServiceClient userclient;
     private final PasswordEncoder passwordEncoder;
@@ -44,7 +45,9 @@ public class AuthController {
 
             // Generate token
             String token = jwtUtil.generateToken(user.username());
-            return new AuthResponse(token);
+            // Return both token and user info (without password)
+            UserDTO userResponse = new UserDTO(user.username(), null);
+            return new AuthResponse(token, userResponse);
         })
                 .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Account not found")));
     }

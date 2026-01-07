@@ -306,7 +306,7 @@ const DeckBuilderPage: React.FC = () => {
     try {
       // Backend expects: POST /deck-card?deckId={deckId}&cardId={cardId}&quantity={quantity}
       const response = await fetch(
-        `http://localhost:8081/deck-card?deckId=${selectedDeckId}&cardId=${cardId}&quantity=${quantity}`,
+        `${API_BASE}/deck-card?deckId=${selectedDeckId}&cardId=${cardId}&quantity=${quantity}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -319,7 +319,7 @@ const DeckBuilderPage: React.FC = () => {
       setQuantityToAdd(1); // Reset quantity
       
       // Reload deck cards to show the newly added card
-      const deckResponse = await fetch(`http://localhost:8081/deck-card/deck/${selectedDeckId}`);
+      const deckResponse = await fetch(`${API_BASE}/deck-card/deck/${selectedDeckId}`);
       if (deckResponse.ok) {
         const cards = await deckResponse.json();
         setDeckCards(cards);
@@ -348,13 +348,13 @@ const DeckBuilderPage: React.FC = () => {
       const newQuantity = currentQuantity + 1;
       
       const deckResponse = await fetch(
-        `http://localhost:8081/deck-card?deckId=${selectedDeckId}&cardId=${cardId}&quantity=${newQuantity}`,
+        `${API_BASE}/deck-card?deckId=${selectedDeckId}&cardId=${cardId}&quantity=${newQuantity}`,
         { method: 'POST' }
       );
       
       if (deckResponse.ok) {
         // Reload deck cards to reflect the change
-        const cardsResponse = await fetch(`http://localhost:8081/deck-card/deck/${selectedDeckId}`);
+        const cardsResponse = await fetch(`${API_BASE}/deck-card/deck/${selectedDeckId}`);
         if (!cardsResponse.ok) throw new Error('Failed to reload deck');
         const cards = await cardsResponse.json();
         setDeckCards(cards);
@@ -390,13 +390,13 @@ const DeckBuilderPage: React.FC = () => {
       const newQuantity = currentQuantity - 1;
       
       const deckResponse = await fetch(
-        `http://localhost:8081/deck-card?deckId=${selectedDeckId}&cardId=${cardId}&quantity=${newQuantity}`,
+        `${API_BASE}/deck-card?deckId=${selectedDeckId}&cardId=${cardId}&quantity=${newQuantity}`,
         { method: 'POST' }
       );
       
       if (deckResponse.ok) {
         // Reload deck cards to reflect the change
-        const cardsResponse = await fetch(`http://localhost:8081/deck-card/deck/${selectedDeckId}`);
+        const cardsResponse = await fetch(`${API_BASE}/deck-card/deck/${selectedDeckId}`);
         if (!cardsResponse.ok) throw new Error('Failed to reload deck');
         const cards = await cardsResponse.json();
         setDeckCards(cards);
@@ -490,7 +490,7 @@ const DeckBuilderPage: React.FC = () => {
       
       if (newQuantity <= 0) {
         // Remove the card entirely
-        const response = await fetch(`http://localhost:8081/deck-card?deckId=${selectedDeckId}&cardId=${cardToRemove.cardId}`, {
+        const response = await fetch(`${API_BASE}/deck-card?deckId=${selectedDeckId}&cardId=${cardToRemove.cardId}`, {
           method: 'DELETE'
         });
         if (!response.ok) {
@@ -500,7 +500,7 @@ const DeckBuilderPage: React.FC = () => {
       } else {
         // Update the quantity
         const response = await fetch(
-          `http://localhost:8081/deck-card?deckId=${selectedDeckId}&cardId=${cardToRemove.cardId}&quantity=${newQuantity}`,
+          `${API_BASE}/deck-card?deckId=${selectedDeckId}&cardId=${cardToRemove.cardId}&quantity=${newQuantity}`,
           { method: 'POST' }
         );
         if (!response.ok) {
@@ -510,7 +510,7 @@ const DeckBuilderPage: React.FC = () => {
       }
       
       // Reload deck cards
-      const cardsResponse = await fetch(`http://localhost:8081/deck-card/deck/${selectedDeckId}`);
+      const cardsResponse = await fetch(`${API_BASE}/deck-card/deck/${selectedDeckId}`);
       if (!cardsResponse.ok) throw new Error('Failed to reload deck');
       const cards = await cardsResponse.json();
       setDeckCards(cards);
