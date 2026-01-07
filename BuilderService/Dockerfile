@@ -1,14 +1,32 @@
-# Use a lightweight JDK 17
-FROM eclipse-temurin:17-jdk-alpine
+# Stage 1: Build the application
+FROM eclipse-temurin:17-jdk AS build
 
-# Set working directory inside container
 WORKDIR /app
 
-# Copy the built Spring Boot JAR
-COPY target/*.jar app.jar
+# Copy Maven wrapper and pom.xml
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
 
-# Expose Builder Service port
+# Download dependencies
+RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
+
+# Copy source code and resources
+COPY src src
+
+# Build the application
+RUN ./mvnw clean package -DskipTests
+
+# Stage 2: Run the application
+FROM eclipse-temurin:17-jre
+
+WORKDIR /app
+
+# Copy the built JAR from build stage
+COPY --from=build /app/target/*.jar app.jar
+
+# Expose BuilderService port
 EXPOSE 8081
 
 # Run the application
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
