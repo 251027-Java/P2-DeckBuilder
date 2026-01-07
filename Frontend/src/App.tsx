@@ -6,15 +6,17 @@ import StartPage from './pages/StartPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import Dashboard from './components/dashboard/Dashboard';
-import Navbar from './components/shared/Navbar';
 import DeckBuilderPage from './pages/DeckBuilderPage';
 import AllCardsPage from './pages/AllCardsPage';
+import LogoutButton from "./components/Logout";
+
 
 const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Toaster position="top-right" />
-      <Navbar />
+        <LogoutButton />
+
       <Routes>
         <Route path="/" element={<StartPage />} />
         <Route path="/start" element={<StartPage />} />
