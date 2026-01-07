@@ -1,5 +1,5 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
 import bg from "../../assets/images/background.png";
 import logo from "../../assets/logo.png";
@@ -11,6 +11,21 @@ import combusken from "../../assets/combusken.png";
 import vulpix from "../../assets/vulpix.png";
 
 import DeckStack from "../decks/DeckStack";
+import { deckService } from "../../services/deckService";
+import { Deck as DeckType } from "../../types/Deck";
+
+/* ---------- Helper Functions ---------- */
+
+// Helper function to generate image URL from card ID
+function getCardImageUrl(cardId: string): string {
+  const parts = cardId.split('-');
+  if (parts.length >= 2) {
+    const setId = parts[0];
+    const cardNumber = parts.slice(1).join('-');
+    return `https://images.pokemontcg.io/${setId}/${cardNumber}.png`;
+  }
+  return '';
+}
 
 /* ---------- Types ---------- */
 
@@ -19,26 +34,73 @@ type Card = {
   imageUrl: string;
 };
 
-type Deck = {
-  id: string;
+type DeckDisplay = {
+  deckId: number;
   name: string;
   cards: Card[];
-};
-
-type CollectionCard = {
-  id: string;
-  cover: string;
 };
 
 /* ---------- Component ---------- */
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
+  const [decks, setDecks] = useState<DeckDisplay[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  /* Mock deck data (frontend-only for now) */
-  const decks: Deck[] = [
+  useEffect(() => {
+    loadDecks();
+  }, []);
+
+  const loadDecks = async () => {
+    try {
+      const decksData = await deckService.getDecks();
+      
+      // Load cards for each deck
+      const displayDecks: DeckDisplay[] = await Promise.all(
+        decksData.map(async (deck) => {
+          try {
+            // Fetch cards for this deck
+            const response = await fetch(`http://localhost:8081/deck-card/deck/${deck.deckId}`);
+            if (response.ok) {
+              const deckCards = await response.json();
+              // Convert to Card format with image URLs (limit to first 5 cards for display)
+              const cards: Card[] = deckCards.slice(0, 5).map((dc: any) => ({
+                id: dc.cardId,
+                imageUrl: getCardImageUrl(dc.cardId)
+              }));
+              return {
+                deckId: deck.deckId,
+                name: deck.name,
+                cards
+              };
+            }
+          } catch (error) {
+            console.error(`Failed to load cards for deck ${deck.deckId}:`, error);
+          }
+          
+          // Return deck with no cards if loading failed
+          return {
+            deckId: deck.deckId,
+            name: deck.name,
+            cards: []
+          };
+        })
+      );
+      
+      setDecks(displayDecks);
+    } catch (error) {
+      console.error('Failed to load decks:', error);
+      // Fallback to mock data if backend fails
+      setDecks(mockDecks);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /* Mock deck data (fallback) */
+  const mockDecks: DeckDisplay[] = [
     {
-      id: "my-deck",
+      deckId: 1,
       name: "MY DECK",
       cards: [
         { id: "charizard", imageUrl: charizard },
@@ -46,7 +108,7 @@ const Dashboard: React.FC = () => {
       ],
     },
     {
-      id: "deck-2",
+      deckId: 2,
       name: "DECK 2",
       cards: [
         { id: "oddish", imageUrl: oddish },
@@ -54,12 +116,6 @@ const Dashboard: React.FC = () => {
         { id: "combusken", imageUrl: combusken },
       ],
     },
-  ];
-
-  const collection: CollectionCard[] = [
-    { id: "magikarp", cover: magikarp },
-    { id: "combusken", cover: combusken },
-    { id: "vulpix", cover: vulpix },
   ];
 
   return (
@@ -85,35 +141,20 @@ const Dashboard: React.FC = () => {
           </h2>
 
           <div className="flex gap-12 flex-wrap">
-            {decks.map((deck) => (
-              <DeckStack
-                key={deck.id}
-                images={deck.cards.map((c) => c.imageUrl)}
-                label={deck.name}
-                onClick={() => navigate(`/decks/${deck.id}`)}
-              />
-            ))}
-          </div>
-        </section>
-
-        {/* ---------- COLLECTION ---------- */}
-        <section className="mt-14">
-          <Link to="/collection" className="inline-block mb-4 hover:underline">
-            <h2 className="text-3xl font-extrabold text-black">
-              COLLECTION
-            </h2>
-          </Link>
-
-          <div className="flex gap-10 flex-wrap">
-            {collection.map((card) => (
-              <div key={card.id} className="w-[210px] h-[290px] rounded-xl bg-white/20 shadow-lg p-3 flex items-center justify-center">
-                <img
-                  src={card.cover}
-                  alt={card.id}
-                  className="w-full h-full object-contain rounded-lg"
+            {loading ? (
+              <div className="text-gray-600">Loading decks...</div>
+            ) : decks.length === 0 ? (
+              <div className="text-gray-600">No decks yet. Create your first deck!</div>
+            ) : (
+              decks.map((deck) => (
+                <DeckStack
+                  key={deck.deckId}
+                  images={deck.cards.length > 0 ? deck.cards.map((c) => c.imageUrl) : [magikarp]}
+                  label={deck.name}
+                  onClick={() => navigate(`/decks/${deck.deckId}`)}
                 />
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </section>
       </div>

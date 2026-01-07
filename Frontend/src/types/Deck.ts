@@ -2,7 +2,7 @@ import { Card } from "./Card";
 
 export interface Deck {
   deckId: number;
-  userId: number;
+  userId?: number | null;
   name: string;
   description: string;
   createdAt: string;
