@@ -14,12 +14,25 @@ spring:
           filters:
             - StripPrefix=1
 
-        - id: builder-service-route
+        - id: builder-service-cards
           uri: lb://BUILDERSERVICE
           predicates:
-            - Path=/builder/**
-          filters:
-            - StripPrefix=1
+            - Path=/card/**
+        
+        - id: builder-service-decks
+          uri: lb://BUILDERSERVICE
+          predicates:
+            - Path=/deck/**
+        
+        - id: builder-service-deck-cards
+          uri: lb://BUILDERSERVICE
+          predicates:
+            - Path=/deck-card/**
+        
+        - id: builder-service-sets
+          uri: lb://BUILDERSERVICE
+          predicates:
+            - Path=/set/**
 
 eureka:
   client:

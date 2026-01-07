@@ -117,9 +117,9 @@ const DeckBuilderPage: React.FC = () => {
       setError(null);
       try {
         const [cardsRes, decksData, setsRes] = await Promise.all([
-          fetch(`http://localhost:8081/card`),
+          fetch(`${API_BASE}/card`),
           deckService.getDecks(),
-          fetch(`http://localhost:8081/set`),
+          fetch(`${API_BASE}/set`),
         ]);
 
         if (!cardsRes.ok) throw new Error(`Cards failed: ${cardsRes.status}`);
@@ -178,7 +178,7 @@ const DeckBuilderPage: React.FC = () => {
     
     (async () => {
       try {
-        const response = await fetch(`http://localhost:8081/deck-card/deck/${selectedDeckId}`);
+        const response = await fetch(`${API_BASE}/deck-card/deck/${selectedDeckId}`);
         if (response.ok) {
           const cards = await response.json();
           setDeckCards(cards);

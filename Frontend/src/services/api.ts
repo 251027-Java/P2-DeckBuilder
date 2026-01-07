@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-// Configure Axios instance to connect to BuilderService
+// Configure Axios instance to connect to API Gateway
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8081',
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080',
   headers: {
     'Content-Type': 'application/json',
   },
