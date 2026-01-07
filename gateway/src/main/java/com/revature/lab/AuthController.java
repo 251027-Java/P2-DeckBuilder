@@ -31,7 +31,7 @@ public class AuthController {
         // Encode the password
         String encodedPassword = passwordEncoder.encode(request.password());
 
-        return userclient.createUserAccount(request.username(), request.password());
+        return userclient.createUserAccount(request.username(), encodedPassword);
     }
 
     @PostMapping("/login")
