@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict De8B0J9qd3JHh2IMV2sO9t3hrwmTXV7UWx5O5rcqVcgxalBwAbfsIgcM3ePasjC
+\restrict JvTDv8iTO3cfLrkS6rjapQXbyq4ppscfvC0kyA4WlJKcX5YPfaLQrbyVZMZHes8
 
 -- Dumped from database version 16.10 (Debian 16.10-1.pgdg13+1)
 -- Dumped by pg_dump version 16.10 (Debian 16.10-1.pgdg13+1)
@@ -18,6 +18,23 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+ALTER TABLE IF EXISTS ONLY public.deck_cards DROP CONSTRAINT IF EXISTS deck_cards_deck_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.deck_cards DROP CONSTRAINT IF EXISTS deck_cards_card_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS users_pkey;
+ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS ukr43af9ap4edm43mmtq01oddj6;
+ALTER TABLE IF EXISTS ONLY public.sets DROP CONSTRAINT IF EXISTS sets_pkey;
+ALTER TABLE IF EXISTS ONLY public.decks DROP CONSTRAINT IF EXISTS decks_pkey;
+ALTER TABLE IF EXISTS ONLY public.decks DROP CONSTRAINT IF EXISTS decks_name_key;
+ALTER TABLE IF EXISTS ONLY public.deck_cards DROP CONSTRAINT IF EXISTS deck_cards_pkey;
+ALTER TABLE IF EXISTS ONLY public.cards DROP CONSTRAINT IF EXISTS cards_pkey;
+ALTER TABLE IF EXISTS public.decks ALTER COLUMN id DROP DEFAULT;
+DROP SEQUENCE IF EXISTS public.users_seq;
+DROP TABLE IF EXISTS public.users;
+DROP TABLE IF EXISTS public.sets;
+DROP SEQUENCE IF EXISTS public.decks_id_seq;
+DROP TABLE IF EXISTS public.decks;
+DROP TABLE IF EXISTS public.deck_cards;
+DROP TABLE IF EXISTS public.cards;
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -101,6 +118,33 @@ CREATE TABLE public.sets (
 ALTER TABLE public.sets OWNER TO postgres;
 
 --
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users (
+    user_id bigint NOT NULL,
+    password character varying(255) NOT NULL,
+    username character varying(255)
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- Name: users_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.users_seq
+    START WITH 1
+    INCREMENT BY 50
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.users_seq OWNER TO postgres;
+
+--
 -- Name: decks id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -112,417 +156,6 @@ ALTER TABLE ONLY public.decks ALTER COLUMN id SET DEFAULT nextval('public.decks_
 --
 
 COPY public.cards (id, card_type, name, rarity, set_id) FROM stdin;
-base1-1	Pokémon	Alakazam	Rare Holo	base1
-base1-2	Pokémon	Blastoise	Rare Holo	base1
-base1-3	Pokémon	Chansey	Rare Holo	base1
-base1-4	Pokémon	Charizard	Rare Holo	base1
-base1-5	Pokémon	Clefairy	Rare Holo	base1
-base1-6	Pokémon	Gyarados	Rare Holo	base1
-base1-7	Pokémon	Hitmonchan	Rare Holo	base1
-base1-8	Pokémon	Machamp	Rare Holo	base1
-base1-9	Pokémon	Magneton	Rare Holo	base1
-base1-10	Pokémon	Mewtwo	Rare Holo	base1
-base1-11	Pokémon	Nidoking	Rare Holo	base1
-base1-12	Pokémon	Ninetales	Rare Holo	base1
-base1-13	Pokémon	Poliwrath	Rare Holo	base1
-base1-14	Pokémon	Raichu	Rare Holo	base1
-base1-15	Pokémon	Venusaur	Rare Holo	base1
-base1-16	Pokémon	Zapdos	Rare Holo	base1
-base1-17	Pokémon	Beedrill	Rare	base1
-base1-18	Pokémon	Dragonair	Rare	base1
-base1-19	Pokémon	Dugtrio	Rare	base1
-base1-20	Pokémon	Electabuzz	Rare	base1
-base1-21	Pokémon	Electrode	Rare	base1
-base1-22	Pokémon	Pidgeotto	Rare	base1
-base1-23	Pokémon	Arcanine	Uncommon	base1
-base1-24	Pokémon	Charmeleon	Uncommon	base1
-base1-25	Pokémon	Dewgong	Uncommon	base1
-base1-26	Pokémon	Dratini	Uncommon	base1
-base1-27	Pokémon	Farfetch'd	Uncommon	base1
-base1-28	Pokémon	Growlithe	Uncommon	base1
-base1-29	Pokémon	Haunter	Uncommon	base1
-base1-30	Pokémon	Ivysaur	Uncommon	base1
-base1-31	Pokémon	Jynx	Uncommon	base1
-base1-32	Pokémon	Kadabra	Uncommon	base1
-base1-33	Pokémon	Kakuna	Uncommon	base1
-base1-34	Pokémon	Machoke	Uncommon	base1
-base1-35	Pokémon	Magikarp	Uncommon	base1
-base1-36	Pokémon	Magmar	Uncommon	base1
-base1-37	Pokémon	Nidorino	Uncommon	base1
-base1-38	Pokémon	Poliwhirl	Uncommon	base1
-base1-39	Pokémon	Porygon	Uncommon	base1
-base1-40	Pokémon	Raticate	Uncommon	base1
-base1-41	Pokémon	Seel	Uncommon	base1
-base1-42	Pokémon	Wartortle	Uncommon	base1
-base1-43	Pokémon	Abra	Common	base1
-base1-44	Pokémon	Bulbasaur	Common	base1
-base1-45	Pokémon	Caterpie	Common	base1
-base1-46	Pokémon	Charmander	Common	base1
-base1-47	Pokémon	Diglett	Common	base1
-base1-48	Pokémon	Doduo	Common	base1
-base1-49	Pokémon	Drowzee	Common	base1
-base1-50	Pokémon	Gastly	Common	base1
-base1-51	Pokémon	Koffing	Common	base1
-base1-52	Pokémon	Machop	Common	base1
-base1-53	Pokémon	Magnemite	Common	base1
-base1-54	Pokémon	Metapod	Common	base1
-base1-55	Pokémon	Nidoran ♂	Common	base1
-base1-56	Pokémon	Onix	Common	base1
-base1-57	Pokémon	Pidgey	Common	base1
-base1-58	Pokémon	Pikachu	Common	base1
-base1-59	Pokémon	Poliwag	Common	base1
-base1-60	Pokémon	Ponyta	Common	base1
-base1-61	Pokémon	Rattata	Common	base1
-base1-62	Pokémon	Sandshrew	Common	base1
-base1-63	Pokémon	Squirtle	Common	base1
-base1-64	Pokémon	Starmie	Common	base1
-base1-65	Pokémon	Staryu	Common	base1
-base1-66	Pokémon	Tangela	Common	base1
-base1-67	Pokémon	Voltorb	Common	base1
-base1-68	Pokémon	Vulpix	Common	base1
-base1-69	Pokémon	Weedle	Common	base1
-base1-70	Trainer	Clefairy Doll	Rare	base1
-base1-71	Trainer	Computer Search	Rare	base1
-base1-72	Trainer	Devolution Spray	Rare	base1
-base1-73	Trainer	Impostor Professor Oak	Rare	base1
-base1-74	Trainer	Item Finder	Rare	base1
-base1-75	Trainer	Lass	Rare	base1
-base1-76	Trainer	Pokémon Breeder	Rare	base1
-base1-77	Trainer	Pokémon Trader	Rare	base1
-base1-78	Trainer	Scoop Up	Rare	base1
-base1-79	Trainer	Super Energy Removal	Rare	base1
-base1-80	Trainer	Defender	Uncommon	base1
-base1-81	Trainer	Energy Retrieval	Uncommon	base1
-base1-82	Trainer	Full Heal	Uncommon	base1
-base1-83	Trainer	Maintenance	Uncommon	base1
-base1-84	Trainer	PlusPower	Uncommon	base1
-base1-85	Trainer	Pokémon Center	Uncommon	base1
-base1-86	Trainer	Pokémon Flute	Uncommon	base1
-base1-87	Trainer	Pokédex	Uncommon	base1
-base1-88	Trainer	Professor Oak	Uncommon	base1
-base1-89	Trainer	Revive	Uncommon	base1
-base1-90	Trainer	Super Potion	Uncommon	base1
-base1-91	Trainer	Bill	Common	base1
-base1-92	Trainer	Energy Removal	Common	base1
-base1-93	Trainer	Gust of Wind	Common	base1
-base1-94	Trainer	Potion	Common	base1
-base1-95	Trainer	Switch	Common	base1
-base1-96	Energy	Double Colorless Energy	Uncommon	base1
-base1-97	Energy	Fighting Energy	\N	base1
-base1-98	Energy	Fire Energy	\N	base1
-base1-99	Energy	Grass Energy	\N	base1
-base1-100	Energy	Lightning Energy	\N	base1
-base1-101	Energy	Psychic Energy	\N	base1
-base1-102	Energy	Water Energy	\N	base1
-base2-1	Pokémon	Clefable	Rare Holo	base2
-base2-2	Pokémon	Electrode	Rare Holo	base2
-base2-3	Pokémon	Flareon	Rare Holo	base2
-base2-4	Pokémon	Jolteon	Rare Holo	base2
-base2-5	Pokémon	Kangaskhan	Rare Holo	base2
-base2-6	Pokémon	Mr. Mime	Rare Holo	base2
-base2-7	Pokémon	Nidoqueen	Rare Holo	base2
-base2-8	Pokémon	Pidgeot	Rare Holo	base2
-base2-9	Pokémon	Pinsir	Rare Holo	base2
-base3-8	Pokémon	Hypno	Rare Holo	base3
-base2-10	Pokémon	Scyther	Rare Holo	base2
-base2-11	Pokémon	Snorlax	Rare Holo	base2
-base2-12	Pokémon	Vaporeon	Rare Holo	base2
-base2-13	Pokémon	Venomoth	Rare Holo	base2
-base2-14	Pokémon	Victreebel	Rare Holo	base2
-base2-15	Pokémon	Vileplume	Rare Holo	base2
-base2-16	Pokémon	Wigglytuff	Rare Holo	base2
-base2-17	Pokémon	Clefable	Rare	base2
-base2-18	Pokémon	Electrode	Rare	base2
-base2-19	Pokémon	Flareon	Rare	base2
-base2-20	Pokémon	Jolteon	Rare	base2
-base2-21	Pokémon	Kangaskhan	Rare	base2
-base2-22	Pokémon	Mr. Mime	Rare	base2
-base2-23	Pokémon	Nidoqueen	Rare	base2
-base2-24	Pokémon	Pidgeot	Rare	base2
-base2-25	Pokémon	Pinsir	Rare	base2
-base2-26	Pokémon	Scyther	Rare	base2
-base2-27	Pokémon	Snorlax	Rare	base2
-base2-28	Pokémon	Vaporeon	Rare	base2
-base2-29	Pokémon	Venomoth	Rare	base2
-base2-30	Pokémon	Victreebel	Rare	base2
-base2-31	Pokémon	Vileplume	Rare	base2
-base2-32	Pokémon	Wigglytuff	Rare	base2
-base2-33	Pokémon	Butterfree	Uncommon	base2
-base2-34	Pokémon	Dodrio	Uncommon	base2
-base2-35	Pokémon	Exeggutor	Uncommon	base2
-base2-36	Pokémon	Fearow	Uncommon	base2
-base2-37	Pokémon	Gloom	Uncommon	base2
-base2-38	Pokémon	Lickitung	Uncommon	base2
-base2-39	Pokémon	Marowak	Uncommon	base2
-base2-40	Pokémon	Nidorina	Uncommon	base2
-base2-41	Pokémon	Parasect	Uncommon	base2
-base2-42	Pokémon	Persian	Uncommon	base2
-base2-43	Pokémon	Primeape	Uncommon	base2
-base2-44	Pokémon	Rapidash	Uncommon	base2
-base2-45	Pokémon	Rhydon	Uncommon	base2
-base2-46	Pokémon	Seaking	Uncommon	base2
-base2-47	Pokémon	Tauros	Uncommon	base2
-base2-48	Pokémon	Weepinbell	Uncommon	base2
-base2-49	Pokémon	Bellsprout	Common	base2
-base2-50	Pokémon	Cubone	Common	base2
-base2-51	Pokémon	Eevee	Common	base2
-base2-52	Pokémon	Exeggcute	Common	base2
-base2-53	Pokémon	Goldeen	Common	base2
-base2-54	Pokémon	Jigglypuff	Common	base2
-base2-55	Pokémon	Mankey	Common	base2
-base2-56	Pokémon	Meowth	Common	base2
-base2-57	Pokémon	Nidoran ♀	Common	base2
-base2-58	Pokémon	Oddish	Common	base2
-base2-59	Pokémon	Paras	Common	base2
-base2-60	Pokémon	Pikachu	Common	base2
-base2-61	Pokémon	Rhyhorn	Common	base2
-base2-62	Pokémon	Spearow	Common	base2
-base2-63	Pokémon	Venonat	Common	base2
-base2-64	Trainer	Poké Ball	Common	base2
-basep-1	Pokémon	Pikachu	Promo	basep
-basep-2	Pokémon	Electabuzz	Promo	basep
-basep-3	Pokémon	Mewtwo	Promo	basep
-basep-4	Pokémon	Pikachu	Promo	basep
-basep-5	Pokémon	Dragonite	Promo	basep
-basep-6	Pokémon	Arcanine	Promo	basep
-basep-7	Pokémon	Jigglypuff	Promo	basep
-basep-8	Pokémon	Mew	Promo	basep
-basep-9	Pokémon	Mew	Promo	basep
-basep-10	Pokémon	Meowth	Promo	basep
-basep-11	Pokémon	Eevee	Promo	basep
-basep-12	Pokémon	Mewtwo	Promo	basep
-basep-13	Pokémon	Venusaur	Promo	basep
-basep-14	Pokémon	Mewtwo	Promo	basep
-basep-15	Pokémon	Cool Porygon	Promo	basep
-basep-16	Trainer	Computer Error	Promo	basep
-basep-17	Pokémon	Dark Persian	Promo	basep
-basep-18	Pokémon	Team Rocket's Meowth	Promo	basep
-basep-19	Pokémon	Sabrina's Abra	Promo	basep
-basep-20	Pokémon	Psyduck	Promo	basep
-basep-21	Pokémon	Moltres	Promo	basep
-basep-22	Pokémon	Articuno	Promo	basep
-basep-23	Pokémon	Zapdos	Promo	basep
-basep-24	Pokémon	_____'s Pikachu	Promo	basep
-basep-25	Pokémon	Flying Pikachu	Promo	basep
-basep-26	Pokémon	Pikachu	Promo	basep
-basep-27	Pokémon	Pikachu	Promo	basep
-basep-28	Pokémon	Surfing Pikachu	Promo	basep
-basep-29	Pokémon	Marill	Promo	basep
-basep-30	Pokémon	Togepi	Promo	basep
-basep-31	Pokémon	Cleffa	Promo	basep
-basep-32	Pokémon	Smeargle	Promo	basep
-basep-33	Pokémon	Scizor	Promo	basep
-basep-34	Pokémon	Entei	Promo	basep
-basep-35	Pokémon	Pichu	Promo	basep
-basep-36	Pokémon	Igglybuff	Promo	basep
-basep-37	Pokémon	Hitmontop	Promo	basep
-basep-38	Pokémon	Unown [J]	Promo	basep
-basep-39	Pokémon	Misdreavus	Promo	basep
-basep-40	Trainer	Pokémon Center	Promo	basep
-basep-41	Trainer	Lucky Stadium	Promo	basep
-basep-42	Trainer	Pokémon Tower	Promo	basep
-basep-43	Pokémon	Machamp	Promo	basep
-basep-44	Pokémon	Magmar	Promo	basep
-basep-45	Pokémon	Scyther	Promo	basep
-basep-46	Pokémon	Electabuzz	Promo	basep
-basep-47	Pokémon	Mew	Promo	basep
-basep-48	Pokémon	Articuno	Promo	basep
-basep-49	Pokémon	Snorlax	Promo	basep
-basep-50	Pokémon	Celebi	Promo	basep
-basep-51	Pokémon	Rapidash	Promo	basep
-basep-52	Pokémon	Ho-oh	Promo	basep
-basep-53	Pokémon	Suicune	Promo	basep
-base3-1	Pokémon	Aerodactyl	Rare Holo	base3
-base3-2	Pokémon	Articuno	Rare Holo	base3
-base3-3	Pokémon	Ditto	Rare Holo	base3
-base3-4	Pokémon	Dragonite	Rare Holo	base3
-base3-5	Pokémon	Gengar	Rare Holo	base3
-base3-6	Pokémon	Haunter	Rare Holo	base3
-base3-7	Pokémon	Hitmonlee	Rare Holo	base3
-base3-9	Pokémon	Kabutops	Rare Holo	base3
-base3-10	Pokémon	Lapras	Rare Holo	base3
-base3-11	Pokémon	Magneton	Rare Holo	base3
-base3-12	Pokémon	Moltres	Rare Holo	base3
-base3-13	Pokémon	Muk	Rare Holo	base3
-base3-14	Pokémon	Raichu	Rare Holo	base3
-base3-15	Pokémon	Zapdos	Rare Holo	base3
-base3-16	Pokémon	Aerodactyl	Rare	base3
-base3-17	Pokémon	Articuno	Rare	base3
-base3-18	Pokémon	Ditto	Rare	base3
-base3-19	Pokémon	Dragonite	Rare	base3
-base3-20	Pokémon	Gengar	Rare	base3
-base3-21	Pokémon	Haunter	Rare	base3
-base3-22	Pokémon	Hitmonlee	Rare	base3
-base3-23	Pokémon	Hypno	Rare	base3
-base3-24	Pokémon	Kabutops	Rare	base3
-base3-25	Pokémon	Lapras	Rare	base3
-base3-26	Pokémon	Magneton	Rare	base3
-base3-27	Pokémon	Moltres	Rare	base3
-base3-28	Pokémon	Muk	Rare	base3
-base3-29	Pokémon	Raichu	Rare	base3
-base3-30	Pokémon	Zapdos	Rare	base3
-base3-31	Pokémon	Arbok	Uncommon	base3
-base3-32	Pokémon	Cloyster	Uncommon	base3
-base3-33	Pokémon	Gastly	Uncommon	base3
-base3-34	Pokémon	Golbat	Uncommon	base3
-base3-35	Pokémon	Golduck	Uncommon	base3
-base3-36	Pokémon	Golem	Uncommon	base3
-base3-37	Pokémon	Graveler	Uncommon	base3
-base3-38	Pokémon	Kingler	Uncommon	base3
-base3-39	Pokémon	Magmar	Uncommon	base3
-base3-40	Pokémon	Omastar	Uncommon	base3
-base3-41	Pokémon	Sandslash	Uncommon	base3
-base3-42	Pokémon	Seadra	Uncommon	base3
-base3-43	Pokémon	Slowbro	Uncommon	base3
-base3-44	Pokémon	Tentacruel	Uncommon	base3
-base3-45	Pokémon	Weezing	Uncommon	base3
-base3-46	Pokémon	Ekans	Common	base3
-base3-47	Pokémon	Geodude	Common	base3
-base3-48	Pokémon	Grimer	Common	base3
-base3-49	Pokémon	Horsea	Common	base3
-base3-50	Pokémon	Kabuto	Common	base3
-base3-51	Pokémon	Krabby	Common	base3
-base3-52	Pokémon	Omanyte	Common	base3
-base3-53	Pokémon	Psyduck	Common	base3
-base3-54	Pokémon	Shellder	Common	base3
-base3-55	Pokémon	Slowpoke	Common	base3
-base3-56	Pokémon	Tentacool	Common	base3
-base3-57	Pokémon	Zubat	Common	base3
-base3-58	Trainer	Mr. Fuji	Uncommon	base3
-base3-59	Trainer	Energy Search	Common	base3
-base3-60	Trainer	Gambler	Common	base3
-base3-61	Trainer	Recycle	Common	base3
-base3-62	Trainer	Mysterious Fossil	Common	base3
-base4-1	Pokémon	Alakazam	Rare Holo	base4
-base4-2	Pokémon	Blastoise	Rare Holo	base4
-base4-3	Pokémon	Chansey	Rare Holo	base4
-base4-4	Pokémon	Charizard	Rare Holo	base4
-base4-5	Pokémon	Clefable	Rare Holo	base4
-base4-6	Pokémon	Clefairy	Rare Holo	base4
-base4-7	Pokémon	Gyarados	Rare Holo	base4
-base4-8	Pokémon	Hitmonchan	Rare Holo	base4
-base4-9	Pokémon	Magneton	Rare Holo	base4
-base4-10	Pokémon	Mewtwo	Rare Holo	base4
-base4-11	Pokémon	Nidoking	Rare Holo	base4
-base4-12	Pokémon	Nidoqueen	Rare Holo	base4
-base4-13	Pokémon	Ninetales	Rare Holo	base4
-base4-14	Pokémon	Pidgeot	Rare Holo	base4
-base4-15	Pokémon	Poliwrath	Rare Holo	base4
-base4-16	Pokémon	Raichu	Rare Holo	base4
-base4-17	Pokémon	Scyther	Rare Holo	base4
-base4-18	Pokémon	Venusaur	Rare Holo	base4
-base4-19	Pokémon	Wigglytuff	Rare Holo	base4
-base4-20	Pokémon	Zapdos	Rare Holo	base4
-base4-21	Pokémon	Beedrill	Rare	base4
-base4-22	Pokémon	Dragonair	Rare	base4
-base4-23	Pokémon	Dugtrio	Rare	base4
-base4-24	Pokémon	Electabuzz	Rare	base4
-base4-25	Pokémon	Electrode	Rare	base4
-base4-26	Pokémon	Kangaskhan	Rare	base4
-base4-27	Pokémon	Mr. Mime	Rare	base4
-base4-28	Pokémon	Pidgeotto	Rare	base4
-base4-29	Pokémon	Pinsir	Rare	base4
-base4-30	Pokémon	Snorlax	Rare	base4
-base4-31	Pokémon	Venomoth	Rare	base4
-base4-32	Pokémon	Victreebel	Rare	base4
-base4-33	Pokémon	Arcanine	Uncommon	base4
-base4-34	Pokémon	Butterfree	Uncommon	base4
-base4-35	Pokémon	Charmeleon	Uncommon	base4
-base4-36	Pokémon	Dewgong	Uncommon	base4
-base4-37	Pokémon	Dodrio	Uncommon	base4
-base4-38	Pokémon	Dratini	Uncommon	base4
-base4-39	Pokémon	Exeggutor	Uncommon	base4
-base4-40	Pokémon	Farfetch'd	Uncommon	base4
-base4-41	Pokémon	Fearow	Uncommon	base4
-base4-42	Pokémon	Growlithe	Uncommon	base4
-base4-43	Pokémon	Haunter	Uncommon	base4
-base4-44	Pokémon	Ivysaur	Uncommon	base4
-base4-45	Pokémon	Jynx	Uncommon	base4
-base4-46	Pokémon	Kadabra	Uncommon	base4
-base4-47	Pokémon	Kakuna	Uncommon	base4
-base4-48	Pokémon	Lickitung	Uncommon	base4
-base4-49	Pokémon	Machoke	Uncommon	base4
-base4-50	Pokémon	Magikarp	Uncommon	base4
-base4-51	Pokémon	Magmar	Uncommon	base4
-base4-52	Pokémon	Marowak	Uncommon	base4
-base4-53	Pokémon	Nidorina	Uncommon	base4
-base4-54	Pokémon	Nidorino	Uncommon	base4
-base4-55	Pokémon	Parasect	Uncommon	base4
-base4-56	Pokémon	Persian	Uncommon	base4
-base4-57	Pokémon	Poliwhirl	Uncommon	base4
-base4-58	Pokémon	Raticate	Uncommon	base4
-base4-59	Pokémon	Rhydon	Uncommon	base4
-base4-60	Pokémon	Seaking	Uncommon	base4
-base4-61	Pokémon	Seel	Uncommon	base4
-base4-62	Pokémon	Tauros	Uncommon	base4
-base4-63	Pokémon	Wartortle	Uncommon	base4
-base4-64	Pokémon	Weepinbell	Uncommon	base4
-base4-65	Pokémon	Abra	Common	base4
-base4-66	Pokémon	Bellsprout	Common	base4
-base4-67	Pokémon	Bulbasaur	Common	base4
-base4-68	Pokémon	Caterpie	Common	base4
-base4-69	Pokémon	Charmander	Common	base4
-base4-70	Pokémon	Cubone	Common	base4
-base4-71	Pokémon	Diglett	Common	base4
-base4-72	Pokémon	Doduo	Common	base4
-base4-73	Pokémon	Drowzee	Common	base4
-base4-74	Pokémon	Exeggcute	Common	base4
-base4-75	Pokémon	Gastly	Common	base4
-base4-76	Pokémon	Goldeen	Common	base4
-base4-77	Pokémon	Jigglypuff	Common	base4
-base4-78	Pokémon	Machop	Common	base4
-base4-79	Pokémon	Magnemite	Common	base4
-base4-80	Pokémon	Meowth	Common	base4
-base4-81	Pokémon	Metapod	Common	base4
-base4-82	Pokémon	Nidoran ♀	Common	base4
-base4-83	Pokémon	Nidoran ♂	Common	base4
-base4-84	Pokémon	Onix	Common	base4
-base4-85	Pokémon	Paras	Common	base4
-base4-86	Pokémon	Pidgey	Common	base4
-base4-87	Pokémon	Pikachu	Common	base4
-base4-88	Pokémon	Poliwag	Common	base4
-base4-89	Pokémon	Rattata	Common	base4
-base4-90	Pokémon	Rhyhorn	Common	base4
-base4-91	Pokémon	Sandshrew	Common	base4
-base4-92	Pokémon	Spearow	Common	base4
-base4-93	Pokémon	Squirtle	Common	base4
-base4-94	Pokémon	Starmie	Common	base4
-base4-95	Pokémon	Staryu	Common	base4
-base4-96	Pokémon	Tangela	Common	base4
-base4-97	Pokémon	Venonat	Common	base4
-base4-98	Pokémon	Voltorb	Common	base4
-base4-99	Pokémon	Vulpix	Common	base4
-base4-100	Pokémon	Weedle	Common	base4
-base4-101	Trainer	Computer Search	Rare	base4
-base4-102	Trainer	Imposter Professor Oak	Rare	base4
-base4-103	Trainer	Item Finder	Rare	base4
-base4-104	Trainer	Lass	Rare	base4
-base4-105	Trainer	Pokémon Breeder	Rare	base4
-base4-106	Trainer	Pokémon Trader	Rare	base4
-base4-107	Trainer	Scoop Up	Rare	base4
-base4-108	Trainer	Super Energy Removal	Rare	base4
-base4-109	Trainer	Defender	Uncommon	base4
-base4-110	Trainer	Energy Retrieval	Uncommon	base4
-base4-111	Trainer	Full Heal	Uncommon	base4
-base4-112	Trainer	Maintenance	Uncommon	base4
-base4-113	Trainer	PlusPower	Uncommon	base4
-base4-114	Trainer	Pokémon Center	Uncommon	base4
-base4-115	Trainer	Pokédex	Uncommon	base4
-base4-116	Trainer	Professor Oak	Uncommon	base4
-base4-117	Trainer	Super Potion	Uncommon	base4
-base4-118	Trainer	Bill	Common	base4
-base4-119	Trainer	Energy Removal	Common	base4
-base4-120	Trainer	Gust of Wind	Common	base4
-base4-121	Trainer	Poké Ball	Common	base4
-base4-122	Trainer	Potion	Common	base4
-base4-123	Trainer	Switch	Common	base4
-base4-124	Energy	Double Colorless Energy	Uncommon	base4
-base4-125	Energy	Fighting Energy	\N	base4
-base4-126	Energy	Fire Energy	\N	base4
-base4-127	Energy	Grass Energy	\N	base4
-base4-128	Energy	Lightning Energy	\N	base4
-base4-129	Energy	Psychic Energy	\N	base4
-base4-130	Energy	Water Energy	\N	base4
 sv8pt5-3	Pokémon	Pinsir	Common	sv8pt5
 sv8pt5-2	Pokémon	Exeggutor	Uncommon	sv8pt5
 sv8pt5-1	Pokémon	Exeggcute	Common	sv8pt5
@@ -1490,9 +1123,9 @@ rsv10pt5-172	Pokémon	Victini	Rare	rsv10pt5
 --
 
 COPY public.deck_cards (deck_id, card_id, quantity) FROM stdin;
-5	base1-1	2
-5	base1-10	1
-5	base1-100	1
+41	rsv10pt5-1	2
+41	rsv10pt5-10	1
+41	rsv10pt5-100	1
 \.
 
 
@@ -1501,7 +1134,10 @@ COPY public.deck_cards (deck_id, card_id, quantity) FROM stdin;
 --
 
 COPY public.decks (id, name, description, created_at) FROM stdin;
-5	Demo Deck	Deck seeded by SeedAll	2026-01-06 13:49:57.182945
+37	fire deck	\N	2026-01-06 18:40:48.838224
+39	temp deck	\N	2026-01-06 19:27:06.775446
+40	water deck	\N	2026-01-06 19:36:47.387541
+41	Demo Deck	Deck seeded by SeedAll	2026-01-06 20:03:13.739428
 \.
 
 
@@ -1684,10 +1320,25 @@ me2	Phantasmal Flames	2025
 
 
 --
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.users (user_id, password, username) FROM stdin;
+\.
+
+
+--
 -- Name: decks_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.decks_id_seq', 29, true);
+SELECT pg_catalog.setval('public.decks_id_seq', 42, true);
+
+
+--
+-- Name: users_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.users_seq', 1, false);
 
 
 --
@@ -1731,6 +1382,22 @@ ALTER TABLE ONLY public.sets
 
 
 --
+-- Name: users ukr43af9ap4edm43mmtq01oddj6; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT ukr43af9ap4edm43mmtq01oddj6 UNIQUE (username);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (user_id);
+
+
+--
 -- Name: deck_cards deck_cards_card_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1750,5 +1417,5 @@ ALTER TABLE ONLY public.deck_cards
 -- PostgreSQL database dump complete
 --
 
-\unrestrict De8B0J9qd3JHh2IMV2sO9t3hrwmTXV7UWx5O5rcqVcgxalBwAbfsIgcM3ePasjC
+\unrestrict JvTDv8iTO3cfLrkS6rjapQXbyq4ppscfvC0kyA4WlJKcX5YPfaLQrbyVZMZHes8
 
