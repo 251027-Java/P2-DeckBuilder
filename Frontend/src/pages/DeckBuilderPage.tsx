@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaSearch, FaPlus, FaTrash } from "react-icons/fa";
 
 import bg from "../assets/images/background.png";
@@ -107,6 +107,8 @@ const DeckBuilderPage: React.FC = () => {
 
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
+
+  const navigate = useNavigate();
 
   // --- load cards & decks ---
   useEffect(() => {
@@ -329,6 +331,41 @@ const DeckBuilderPage: React.FC = () => {
     }
   }
 
+  async function incrementCardInDeck(cardId: string, cardName: string, currentQuantity: number) {
+    if (!selectedDeckId) {
+      setError("Select a deck first");
+      return;
+    }
+
+    if (currentQuantity >= 4) {
+      setError(`Cannot add more copies of ${cardName}. Maximum of 4 copies reached.`);
+      return;
+    }
+
+    setBusy("addToDeck");
+    setError(null);
+    try {
+      const newQuantity = currentQuantity + 1;
+      
+      const deckResponse = await fetch(
+        `http://localhost:8081/deck-card?deckId=${selectedDeckId}&cardId=${cardId}&quantity=${newQuantity}`,
+        { method: 'POST' }
+      );
+      
+      if (deckResponse.ok) {
+        // Reload deck cards to reflect the change
+        const cardsResponse = await fetch(`http://localhost:8081/deck-card/deck/${selectedDeckId}`);
+        if (!cardsResponse.ok) throw new Error('Failed to reload deck');
+        const cards = await cardsResponse.json();
+        setDeckCards(cards);
+      }
+    } catch (e: any) {
+      setError(e?.message ?? "Failed to add card to deck");
+    } finally {
+      setBusy(null);
+    }
+  }
+
   async function saveDeck() {
     // Note: Backend doesn't have an update endpoint yet
     // For now, just show a message
@@ -407,12 +444,27 @@ const DeckBuilderPage: React.FC = () => {
     setError(null);
 
     try {
-      // Remove card(s) - backend will handle quantity
-      for (let i = 0; i < quantityToRemove; i++) {
+      const newQuantity = cardToRemove.currentQuantity - quantityToRemove;
+      
+      if (newQuantity <= 0) {
+        // Remove the card entirely
         const response = await fetch(`http://localhost:8081/deck-card?deckId=${selectedDeckId}&cardId=${cardToRemove.cardId}`, {
           method: 'DELETE'
         });
-        if (!response.ok) throw new Error(`Failed to remove card: ${response.status}`);
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Failed to remove card: ${response.status} - ${errorText}`);
+        }
+      } else {
+        // Update the quantity
+        const response = await fetch(
+          `http://localhost:8081/deck-card?deckId=${selectedDeckId}&cardId=${cardToRemove.cardId}&quantity=${newQuantity}`,
+          { method: 'POST' }
+        );
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Failed to update card quantity: ${response.status} - ${errorText}`);
+        }
       }
       
       // Reload deck cards
@@ -524,6 +576,7 @@ const DeckBuilderPage: React.FC = () => {
                   onClick={() => {
                     setSelectedDeckId(d.id);
                     setDeckName(d.name);
+                    navigate(`/decks/${d.id}`);
                   }}
                   className={`text-left px-4 py-3 rounded-xl transition-all shadow ${
                     selectedDeckId === d.id
@@ -632,6 +685,18 @@ const DeckBuilderPage: React.FC = () => {
                       <div className="absolute top-1 right-1 bg-black/70 text-white text-xs font-bold px-2 py-0.5 rounded">
                         x{deckCard.quantity}
                       </div>
+                      
+                      {/* Add button */}
+                      {deckCard.quantity < 4 && (
+                        <button
+                          onClick={() => incrementCardInDeck(deckCard.cardId, deckCard.cardName, deckCard.quantity)}
+                          disabled={busy === "addToDeck"}
+                          className="absolute bottom-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-green-500 text-white hover:bg-green-600 disabled:opacity-50"
+                          title="Add one more copy"
+                        >
+                          <FaPlus className="w-3 h-3" />
+                        </button>
+                      )}
                       
                       {/* Remove button */}
                       <button
@@ -763,8 +828,8 @@ const DeckBuilderPage: React.FC = () => {
                       <h3 className="text-lg font-bold text-black">{activeCard.cardType}</h3>
                       <p className="text-sm text-gray-600">{activeCard.rarity}</p>
                     </div>
-                    <div className="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                      Set: {activeCard.setName || activeCard.setId}
+                    <div className="flex items-center justify-center text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                      <span>Set: {activeCard.setName || activeCard.setId}</span>
                     </div>
                   </div>
                   
