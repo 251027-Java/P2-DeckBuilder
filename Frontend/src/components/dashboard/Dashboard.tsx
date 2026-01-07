@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { FaPlus } from "react-icons/fa"; //
 
 import bg from "../../assets/images/background.png";
 import logo from "../../assets/logo.png";
@@ -16,15 +17,14 @@ import { Deck as DeckType } from "../../types/Deck";
 
 /* ---------- Helper Functions ---------- */
 
-// Helper function to generate image URL from card ID
 function getCardImageUrl(cardId: string): string {
-  const parts = cardId.split('-');
+  const parts = cardId.split("-");
   if (parts.length >= 2) {
     const setId = parts[0];
-    const cardNumber = parts.slice(1).join('-');
+    const cardNumber = parts.slice(1).join("-");
     return `https://images.pokemontcg.io/${setId}/${cardNumber}.png`;
   }
-  return '';
+  return "";
 }
 
 /* ---------- Types ---------- */
@@ -51,52 +51,6 @@ const Dashboard: React.FC = () => {
     loadDecks();
   }, []);
 
-  const loadDecks = async () => {
-    try {
-      const decksData = await deckService.getDecks();
-      
-      // Load cards for each deck
-      const displayDecks: DeckDisplay[] = await Promise.all(
-        decksData.map(async (deck) => {
-          try {
-            // Fetch cards for this deck
-            const response = await fetch(`http://localhost:8081/deck-card/deck/${deck.deckId}`);
-            if (response.ok) {
-              const deckCards = await response.json();
-              // Convert to Card format with image URLs (limit to first 5 cards for display)
-              const cards: Card[] = deckCards.slice(0, 5).map((dc: any) => ({
-                id: dc.cardId,
-                imageUrl: getCardImageUrl(dc.cardId)
-              }));
-              return {
-                deckId: deck.deckId,
-                name: deck.name,
-                cards
-              };
-            }
-          } catch (error) {
-            console.error(`Failed to load cards for deck ${deck.deckId}:`, error);
-          }
-          
-          // Return deck with no cards if loading failed
-          return {
-            deckId: deck.deckId,
-            name: deck.name,
-            cards: []
-          };
-        })
-      );
-      
-      setDecks(displayDecks);
-    } catch (error) {
-      console.error('Failed to load decks:', error);
-      // Fallback to mock data if backend fails
-      setDecks(mockDecks);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   /* Mock deck data (fallback) */
   const mockDecks: DeckDisplay[] = [
     {
@@ -118,6 +72,55 @@ const Dashboard: React.FC = () => {
     },
   ];
 
+  const loadDecks = async () => {
+    try {
+      const decksData = await deckService.getDecks();
+
+      const displayDecks: DeckDisplay[] = await Promise.all(
+        decksData.map(async (deck) => {
+          try {
+            const response = await fetch(
+              `http://localhost:8081/deck-card/deck/${deck.deckId}`
+            );
+
+            if (response.ok) {
+              const deckCards = await response.json();
+
+              const cards: Card[] = deckCards.slice(0, 5).map((dc: any) => ({
+                id: dc.cardId,
+                imageUrl: getCardImageUrl(dc.cardId),
+              }));
+
+              return {
+                deckId: deck.deckId,
+                name: deck.name,
+                cards,
+              };
+            }
+          } catch (error) {
+            console.error(
+              `Failed to load cards for deck ${deck.deckId}:`,
+              error
+            );
+          }
+
+          return {
+            deckId: deck.deckId,
+            name: deck.name,
+            cards: [],
+          };
+        })
+      );
+
+      setDecks(displayDecks);
+    } catch (error) {
+      console.error("Failed to load decks:", error);
+      setDecks(mockDecks);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div
       className="min-h-screen bg-cover bg-center bg-no-repeat pb-16"
@@ -125,31 +128,44 @@ const Dashboard: React.FC = () => {
     >
       {/* Pokémon Logo */}
       <div className="flex justify-center pt-10">
-        <img
-          src={logo}
-          alt="Pokémon"
-          className="w-[min(700px,85vw)] h-auto"
-        />
+        <img src={logo} alt="Pokémon" className="w-[min(700px,85vw)] h-auto" />
       </div>
 
       {/* Page Content */}
       <div className="mx-auto w-[min(980px,92vw)] pt-8">
         {/* ---------- DECKS ---------- */}
         <section className="mt-6">
-          <h2 className="text-3xl font-extrabold text-black mb-4">
-            DECKS
-          </h2>
+          {/* header row with + button */}
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-3xl font-extrabold text-black">DECKS</h2>
+
+            <button
+              type="button"
+              onClick={() => navigate("/decks/new")}
+              className="flex items-center justify-center w-12 h-12 rounded-full bg-black text-white shadow-lg hover:scale-105 transition"
+              aria-label="Create new deck"
+              title="Create new deck"
+            >
+              <FaPlus />
+            </button>
+          </div>
 
           <div className="flex gap-12 flex-wrap">
             {loading ? (
               <div className="text-gray-600">Loading decks...</div>
             ) : decks.length === 0 ? (
-              <div className="text-gray-600">No decks yet. Create your first deck!</div>
+              <div className="text-gray-600">
+                No decks yet. Create your first deck!
+              </div>
             ) : (
               decks.map((deck) => (
                 <DeckStack
                   key={deck.deckId}
-                  images={deck.cards.length > 0 ? deck.cards.map((c) => c.imageUrl) : [magikarp]}
+                  images={
+                    deck.cards.length > 0
+                      ? deck.cards.map((c) => c.imageUrl)
+                      : [magikarp]
+                  }
                   label={deck.name}
                   onClick={() => navigate(`/decks/${deck.deckId}`)}
                 />
