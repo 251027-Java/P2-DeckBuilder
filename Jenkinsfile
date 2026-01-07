@@ -7,13 +7,10 @@ pipeline {
 
     stages {
         stage('Build') {
-        steps {
-            echo "Building branch: ${env.BRANCH_NAME}"
+            steps {
+                echo "Building branch: ${env.BRANCH_NAME}"
+            }
         }
-        }
-    }
-
-    stages {
         stage('Test') {
             steps {
                 sh 'chmod +x BuilderService/mvnw UserService/mvnw'
