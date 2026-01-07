@@ -80,7 +80,7 @@ const Dashboard: React.FC = () => {
         decksData.map(async (deck) => {
           try {
             const response = await fetch(
-              `http://localhost:8081/deck-card/deck/${deck.deckId}`
+              `http://localhost:8080/deck-card/deck/${deck.deckId}`
             );
 
             if (response.ok) {
