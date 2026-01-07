@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FaHome, FaLayerGroup, FaImages, FaExchangeAlt, FaSignOutAlt, FaStar } from 'react-icons/fa';
+import { FaHome, FaImages, FaExchangeAlt, FaSignOutAlt, FaStar } from 'react-icons/fa';
 import { useAuthStore } from '../../store/authStore';
 
 const Navbar: React.FC = () => {
@@ -17,7 +17,6 @@ const Navbar: React.FC = () => {
 
   const navItems = [
     { to: '/dashboard', icon: FaHome, label: 'Dashboard' },
-    { to: '/decks', icon: FaLayerGroup, label: 'My Decks' },
     { to: '/collection', icon: FaImages, label: 'Collection' },
     { to: '/trades', icon: FaExchangeAlt, label: 'Trades' },
   ];
