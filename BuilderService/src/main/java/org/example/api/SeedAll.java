@@ -1,18 +1,21 @@
 package org.example.api;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
 import org.example.DBSetUp;
 import org.example.Repository.ICardRepository;
 import org.example.Repository.ISetRepository;
 import org.example.config.ConfigApplicationProperties;
-import org.example.model.Set;
 import org.example.model.Card;
+import org.example.model.Set;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
 
 @Component
 public class SeedAll implements CommandLineRunner {
@@ -74,14 +77,16 @@ public class SeedAll implements CommandLineRunner {
                 System.out.println("Found " + existingSetCount + " sets already in database. Skipping set seeding.");
             }
 
-            // Step 2: Seed cards for first 5 sets in database
+            // Step 2: Seed cards for most recent 5 sets in database
             System.out.println("\n=== Seeding Cards ===");
             
-            List<Set> allSets = setRepo.findAll();
+            // Get sets ordered by release year (most recent first)
+            List<Set> allSets = setRepo.findAllOrderByReleaseYearDesc();
             int setsToProcess = Math.min(5, allSets.size());
             
-            System.out.println("Found " + allSets.size() + " total sets. Processing first " + setsToProcess + " sets...");
+            System.out.println("Found " + allSets.size() + " total sets. Processing most recent " + setsToProcess + " sets...");
             
+            // Process the first 5 from the ordered list (which are the most recent)
             for (int i = 0; i < setsToProcess; i++) {
                 Set set = allSets.get(i);
                 String setId = set.getId();

@@ -1,11 +1,26 @@
 import axios from 'axios';
 
-// TODO: Configure Axios instance with base URL and interceptors
+// Configure Axios instance to connect to BuilderService
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080/api',
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8081',
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 10000,
 });
+
+// Add request interceptor for future auth token support
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export default api;
