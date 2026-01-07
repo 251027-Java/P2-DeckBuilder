@@ -1,0 +1,280 @@
+Phase 0 — Project Initialization & Planning
+Goals
+•	Finalize team, roles, workflow, and tools.
+•	Set up repositories and project board.
+•	Establish architecture and technical stack.
+•	Produce required documentation elements for README.
+Steps
+1.	Team Setup
+o	Assign responsibilities (frontend lead, backend leads, DevOps lead, documentation lead, presenter).
+o	Create a shared project board (GitHub Projects, Trello, or Jira).
+o	Schedule daily/regular stand-ups.
+2.	Repository Initialization
+o	Create organization repo (main + develop branches).
+o	Enforce branch protection rules (no direct commits to main).
+o	Create folder structure:
+o	/frontend
+o	/services
+o	  /auth-user-service
+o	  /deck-service
+o	  /card-catalog-service
+o	  /gateway-service
+o	  /eureka-server
+o	/infra
+o	  /docker
+o	  /kafka
+o	  /postgres
+3.	Architecture Planning
+o	Microservices:
+	Auth Service (JWT)
+	Deck Service
+	Card Catalog Service (Pokemon TCG API)
+	Gateway + Eureka
+o	Database layout (Postgres + 3NF tables).
+o	Decide what actions produce Kafka events.
+4.	Documentation Prep
+o	Draft user stories.
+o	Create system ERD.
+o	Create frontend wireframe.
+o	Plan API endpoint documentation structure.
+ 
+Phase 1 — Database & Environment Setup
+Goals
+•	Create PostgreSQL schema and Docker setup.
+•	Ensure local and service-level connectivity.
+•	Validate 3NF and many-to-many relationships.
+Steps
+1.	Write SQL Schema
+Include tables:
+o	USERS
+o	SETS
+o	CARDS
+o	DECKS
+o	DECK_CARDS
+o	COLLECTIONS
+(PK/FK + 3NF validated)
+2.	Create Docker Compose
+o	Add:
+	postgres
+	pgadmin
+o	Configure DB credentials via .env.db.
+3.	Initialize DB
+o	Start Postgres container.
+o	Test via pgAdmin login.
+o	Run schema migrations manually or via Flyway/Liquibase.
+4.	Service-Level DB Connectivity
+o	Each service gets environment variables:
+o	SPRING_DATASOURCE_URL
+o	SPRING_DATASOURCE_USERNAME
+o	SPRING_DATASOURCE_PASSWORD
+o	Confirm each service boots successfully with DB connection.
+ 
+Phase 2 — Backend Service Scaffolding
+Goals
+•	Create all core backend services with layered architecture.
+•	Register services with Eureka.
+•	Set up communication via Gateway.
+Steps
+1.	Eureka Server Setup
+o	Scaffold new Spring Boot project.
+o	Add @EnableEurekaServer.
+o	Configure port (usually 8761).
+2.	Gateway Service Setup
+o	Add Spring Cloud Gateway dependency.
+o	Configure route mappings:
+	/api/auth/** → Auth Service
+	/api/cards/** → Card-Catalog Service
+	/api/decks/** → Deck Service
+	/api/users/** → Deck Service (collection + deck ownership)
+3.	Microservices Scaffolding
+For each service:
+o	Create Spring Boot project.
+o	Add:
+	Spring Web
+	Spring Data JPA
+	Validation
+	Lombok
+	PostgreSQL driver
+	Eureka Client
+o	Use 3-layer structure:
+o	controller/
+o	service/
+o	repository/
+o	entity/
+o	dto/
+o	exception/
+4.	Base Endpoints (stubs only)
+o	Auth: /register, /login
+o	Catalog: /cards/search, /sets
+o	Deck: /decks, /decks/{id}, /collection
+ 
+Phase 3 — Pokémon TCG API Integration
+Goals
+•	Build card-catalog-service that consumes external API.
+•	Sync/set data into Postgres.
+•	Support search endpoints for React.
+Steps
+1.	Configure WebClient
+o	Base URL: https://api.pokemontcg.io/v2
+o	Header: X-Api-Key.
+2.	DTO Mapping
+o	Create DTOs for Pokemon TCG API response format.
+o	Implement mapping to JPA entities (CARDS, SETS).
+3.	Sync Logic
+o	On search:
+1.	Check DB for matches.
+2.	If no results, fetch from Pokémon TCG API.
+3.	Persist response to DB.
+4.	Controller Implementation
+o	/cards/search?q=name
+o	/sets
+ 
+Phase 4 — Authentication & Authorization (JWT)
+Goals
+•	Enable secure login.
+•	Protect deck + collection APIs.
+•	Integrate JWT into Gateway.
+Steps
+1.	User Registration
+o	Hash passwords (BCrypt).
+o	Save to USERS table.
+2.	Login
+o	Validate password.
+o	Issue JWT containing:
+	userId
+	username
+	role
+3.	Gateway Filter
+o	Check JWT validity for protected endpoints.
+o	Pass user information through headers.
+4.	Role-based Access
+o	Deck + Collection endpoints require valid JWT.
+o	Auth endpoints remain public.
+ 
+Phase 5 — Deck Management & User Collections
+Goals
+•	Fully implement the deck-service.
+•	Support CRUD for decks.
+•	Implement collection feature.
+Steps
+1.	Collection Endpoint
+o	GET /users/{id}/collection
+o	POST /users/{id}/collection (add card)
+o	Update quantity if card already exists.
+2.	Deck Endpoints
+o	POST /users/{id}/decks (create)
+o	GET /users/{id}/decks
+o	GET /decks/{deckId}
+o	POST /decks/{deckId}/cards
+o	DELETE /decks/{deckId}/cards/{cardId}
+3.	Business Rules
+o	Validate deck ownership.
+o	Ensure adding cards doesn’t exceed collection quantity.
+o	Support deck description updates.
+4.	Exception Handling
+o	Missing deck/card/user → custom exceptions.
+o	Global exception handler returning JSON.
+ 
+Phase 6 — Kafka Event Integration
+Goals
+•	Produce messages when significant actions occur.
+•	Optionally add a log-consumer or notification service.
+Steps
+1.	Configure Kafka in Docker Compose
+o	Add broker + zookeeper.
+2.	Add Kafka to Services
+o	Deck-service publishes events:
+	deck.created
+	card.added
+o	Auth-service publishes user.registered.
+3.	(Optional) Logging Service
+o	A simple microservice consuming those events.
+o	Writes logs to console or a file.
+ 
+Phase 7 — React Frontend Development
+Goals
+•	Build the SPA with routing, auth, and deck builder UI.
+•	Connect to backend via Gateway.
+Steps
+1.	Project Setup
+o	Create React app.
+o	Install React Router.
+o	Install Axios (or fetch wrapper).
+2.	Pages
+o	Login / Register Page
+o	Card Search Page
+o	Collection Page
+o	Decks Page
+o	Deck Builder Page
+o	Dashboard / Home
+3.	Components (5+ required)
+o	CardList
+o	DeckList
+o	DeckEditor
+o	CollectionGrid
+o	SearchBar
+o	AuthForm
+o	Navbar
+4.	Two-Way Binding
+o	Search input.
+o	Login form.
+o	Deck name editing.
+5.	API Integration
+o	Attach JWT in Axios interceptor.
+o	Handle loading & error states.
+o	Display cards retrieved from card-catalog-service.
+ 
+Phase 8 — Testing (JUnit, Mockito, React Tests)
+Goals
+•	Achieve required test coverage (≥50% backend).
+•	Mock external dependencies.
+Steps
+1.	Backend Unit Testing
+o	Test services with Mockito.
+o	Mock repositories.
+o	Mock Pokémon TCG Client.
+2.	Controller Tests
+o	Use MockMvc where appropriate.
+3.	Integration Tests (Optional)
+o	Validate DB behavior with Testcontainers.
+4.	Frontend Tests
+o	At least 1–3 tests for major components or pages.
+ 
+Phase 9 — CI/CD with Jenkins
+Goals
+•	Automatically test project on PR/push.
+•	Build Docker images.
+Steps
+1.	Create Jenkinsfile
+o	Stages:
+	Checkout
+	Build Backend
+	Run Tests
+	Build Docker Images
+	(Optional) Push to Docker Hub
+2.	Webhook Setup
+o	Connect GitHub repo so pushes trigger pipelines.
+ 
+Phase 10 — Final Packaging & Presentation
+Goals
+•	Prepare a professional 15–25 min demonstration.
+•	Finalize README and all deliverables.
+Steps
+1.	Demo Flow
+o	Login/register
+o	Search cards → add to collection
+o	Create deck → add cards
+o	View deck → verify DB + Kafka logging
+o	Show Postgres + Docker + Gateway + Eureka running
+2.	README Requirements
+o	App description
+o	User stories
+o	ERD
+o	Wireframe
+o	API Docs
+o	Setup instructions
+o	Docker instructions
+3.	Dry Run
+o	Time the presentation.
+o	Ensure all services start via docker-compose up.
+

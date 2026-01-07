@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: sidneygil/deckbuilder-db:v16-multiplatform
@@ -30,7 +28,7 @@ services:
       - deckbuilder-network
 
   user-service:
-    build: ./user-service
+    build: ./UserService
     container_name: user-service
     depends_on:
       - eureka-server
@@ -46,7 +44,7 @@ services:
       - deckbuilder-network
 
   builder-service:
-    build: ./builder-service
+    build: ./BuilderService
     container_name: builder-service
     depends_on:
       - eureka-server
@@ -74,6 +72,20 @@ services:
       - "8080:8080"
     networks:
       - deckbuilder-network
+
+  frontend:
+    build: ./Frontend
+    container_name: deckbuilder-frontend
+    depends_on:
+      - builder-service
+      - user-service
+      - gateway
+    ports:
+      - "3000:80"
+    networks:
+      - deckbuilder-network
+    environment:
+      - NODE_ENV=production
 
 volumes:
   postgres-data:

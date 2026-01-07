@@ -12,18 +12,26 @@ public class ConfigApplicationProperties {
     private static String pass;
 
     private static void loadProperties() {
-        try (InputStream input = ConfigApplicationProperties.class
-                .getClassLoader()
-                .getResourceAsStream("application.properties")) {
-            if (input == null) {
-                throw new IllegalStateException("application.properties not found");
+        // First check environment variables (for Docker)
+        url = System.getenv("SPRING_DATASOURCE_URL");
+        user = System.getenv("SPRING_DATASOURCE_USERNAME");
+        pass = System.getenv("SPRING_DATASOURCE_PASSWORD");
+        
+        // If not in environment, load from application.properties
+        if (url == null || user == null || pass == null) {
+            try (InputStream input = ConfigApplicationProperties.class
+                    .getClassLoader()
+                    .getResourceAsStream("application.properties")) {
+                if (input == null) {
+                    throw new IllegalStateException("application.properties not found");
+                }
+                props.load(input);
+                if (url == null) url = props.getProperty("DB_URL");
+                if (user == null) user = props.getProperty("DB_USER");
+                if (pass == null) pass = props.getProperty("DB_PASS");
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to load application.properties", e);
             }
-            props.load(input);
-            url = props.getProperty("DB_URL");
-            user = props.getProperty("DB_USER");
-            pass = props.getProperty("DB_PASS");
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to load application.properties", e);
         }
     }
 
